@@ -25,11 +25,11 @@ module Deepspace
 
         # Determina el número de armas que recibirá la estación
         def initWithNWeapons()
-            @prob = @generator.rand()
-            if @prob < @NWEAPONSPROB
+            prob = @generator.rand()
+            if prob < @NWEAPONSPROB
                 return 1
             else
-                if @prob < 2 * @NWEAPONSPROB
+                if prob < 2 * @NWEAPONSPROB
                     return 2
                 else
                     return 3
@@ -73,12 +73,12 @@ end
 
 
 
-# Código de comprobación
-# prueba = Deepspace::Dice.new
-# puts prueba.initWithNHangars()
-# puts prueba.initWithNWeapons()
-# puts prueba.initWithNShields()
-# puts prueba.whoStarts(5)
-# puts prueba.firstShot()
-# puts prueba.spaceStationMoves(1)
+ #Código de comprobación
+ #prueba = Deepspace::Dice.new
+ #puts prueba.initWithNHangars()
+ #puts prueba.initWithNWeapons()
+ #puts prueba.initWithNShields()
+ #puts prueba.whoStarts(5)
+ #puts prueba.firstShot()
+ #puts prueba.spaceStationMoves(1)
 
