@@ -48,7 +48,7 @@ public class Dice {
         if(prob < NWEAPONSPROB)
             return 1;
         else
-            if(prob < 1-2*NWEAPONSPROB)
+            if(prob < 2*NWEAPONSPROB)
                 return 2;
             else
                 return 3;
