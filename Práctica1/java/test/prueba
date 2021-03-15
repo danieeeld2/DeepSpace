@@ -1,0 +1,64 @@
+Probando todos los métodos y clases
+
+Enum CombatResult:
+
+ENEMYWINS
+NOCOMBAT
+STATIONESCAPES
+STATIONWINS
+
+
+Enum GameCharacter:
+
+ENEMYSTARSHIP
+SPACESTATION
+
+
+Enum ShotResult:
+
+DONOTRESIST
+RESIST
+
+
+Weapon Type:
+
+2.0
+3.0
+4.0
+
+
+Loot:
+
+1
+2
+3
+4
+5
+
+
+SuppliesPackage:
+
+1.0
+2.0
+3.0
+
+
+Weapon:
+
+PLASMA
+4.0
+4.0
+7
+
+
+DIce:
+
+25~27
+75~73
+33~32
+33~35
+33~33
+25~21
+75~79
+50~49
+50~51
