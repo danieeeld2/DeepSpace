@@ -35,6 +35,17 @@ module Deepspace
                 1.0
             end
         end
+
+        # String representacion
+        # @return [String] representacion
+        def to_s
+            getUIversion().to_s
+        end
+
+        # To UI
+        def getUIversion
+            return ShieldToUI.new(self)
+        end
     end
 end
 

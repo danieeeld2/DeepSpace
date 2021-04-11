@@ -1,5 +1,7 @@
 #encoding: utf-8
 
+require_relative 'LootToUI'
+
 # Representa el botín que se obtiene al vencer a una nave enemiga
 
 module Deepspace
@@ -30,6 +32,15 @@ module Deepspace
 
         def nMedals
             @nMedals
+        end
+
+        def to_s
+            getUIversion().to_s
+        end
+
+        # To UI
+        def getUIversion
+            return LootToUI.new(self)
         end
         
     end
