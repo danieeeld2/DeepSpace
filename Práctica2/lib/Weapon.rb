@@ -1,6 +1,7 @@
 #enconding: utf-8
 
-require_relative "WeaponType"
+require_relative 'WeaponType'
+require_relative 'WeaponToUI'
 
 # Representa a las armas de las que puede disponer una estación 
 # espacial para potenciar su energá al disparar
@@ -45,9 +46,11 @@ module Deepspace
         # String representacion
         # @return [String] representacion
         def to_s
-            getUIversion().to_s
+            message = "[Weapon]-> Name: #{@name}, Type: #{@type}, Power: #{power}, " \
+                    + "Uses: #{@uses}"
+            return message
         end
-
+    
         # To UI
         def getUIversion
             return WeaponToUI.new(self)
