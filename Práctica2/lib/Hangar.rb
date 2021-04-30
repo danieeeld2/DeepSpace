@@ -33,6 +33,8 @@ module Deepspace
       h.weapons.each do |weapon|
         copy.addWeapon(weapon)
       end
+
+      return copy
     end
 
     # Getters
@@ -105,5 +107,35 @@ module Deepspace
       return HangarToUI.new(self)
     end
   end
-
 end
+
+# Código de prueba
+# prueba = Deepspace::Hangar.new(4)
+# puts prueba.maxElements
+# puts prueba.shieldBoosters
+# puts prueba.weapons
+# puts prueba.spaceAvailable
+# arma = Deepspace::Weapon.new('laser', Deepspace::WeaponType::PLASMA, 8)
+# arma2 = Deepspace::Weapon.new('misil', Deepspace::WeaponType::MISSILE, 10)
+# prueba.addWeapon(arma)
+# prueba.addWeapon(arma2)
+# escudo = Deepspace::ShieldBooster.new('prueba', 1,1)
+# prueba.addShieldBooster(escudo)
+# prueba.addShieldBooster(escudo)
+# puts prueba.weapons
+# puts prueba.shieldBoosters
+# puts prueba.spaceAvailable
+# puts prueba.to_s
+# prueba.removeWeapon(1)
+# puts prueba.weapons
+# prueba.removeShieldBooster(0)
+# puts prueba.shieldBoosters
+# prueba2 = Deepspace::Hangar.newCopy(prueba)
+# puts "---------------------"
+# puts prueba2.maxElements
+# puts prueba2.weapons
+# puts prueba2.shieldBoosters
+# puts prueba2.spaceAvailable
+# puts prueba2.to_s
+
+
