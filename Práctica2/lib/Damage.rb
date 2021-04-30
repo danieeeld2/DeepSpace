@@ -42,9 +42,9 @@ module Deepspace
 
     # Constructor de copia
     # @param d [Damage] instancia a copiar
-    def self.copy(d)
+    def self.newCopy(d)
       if d.nWeapons == -1
-        return newArrayWeapons(d.nShields, d.weapons)
+        return newSpecificWeapons(d.nShields, d.weapons)
       else
         return newNumericWeapons(d.nShields, d.nWeapons)
       end
@@ -144,3 +144,33 @@ module Deepspace
 
   end
 end
+
+# # Código de prueba
+# prueba1 = Deepspace::Damage.newNumericWeapons(2,2)
+# puts prueba1.nShields
+# puts prueba1.nWeapons
+# puts prueba1.weapons
+# puts prueba1.to_s 
+# arma1 = Deepspace::Weapon.new('laser', Deepspace::WeaponType::PLASMA, 8)
+# arma2 = Deepspace::Weapon.new('misil', Deepspace::WeaponType::MISSILE, 10)
+# armas = []
+# armas << arma1
+# armas << arma2
+# prueba2 = Deepspace::Damage.newSpecificWeapons(3,armas)
+# puts prueba2.nShields
+# puts prueba2.nWeapons
+# puts prueba2.weapons
+# puts prueba2.to_s 
+# prueba3 = Deepspace::Damage.newCopy(prueba1)
+# puts prueba3.to_s
+# prueba4 = Deepspace::Damage.newCopy(prueba2)
+# puts prueba4.to_s
+# puts prueba1.hasNoEffect
+# # puts prueba2.arrayContainsType(armas,Deepspace::WeaponType::LASER) #-> Este método necesita comprobaciones
+# # prueba3 = prueba2.adjust([Deepspace::WeaponType::LASER, Deepspace::WeaponType::MISSILE],["test"]) #-> Este método necesita comprobaciones
+# prueba1.discardWeapon(arma1)
+# puts prueba1.nWeapons
+# prueba2.discardWeapon(arma1) #-> Necesita revisión
+# puts prueba2.weapons
+# prueba1.discardShieldBooster
+# puts prueba1.nShields
