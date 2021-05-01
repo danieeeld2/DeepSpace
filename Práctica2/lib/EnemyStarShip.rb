@@ -74,3 +74,17 @@ module Deepspace
     end
   end
 end
+
+# Código de prueba
+# loot = Deepspace::Loot.new(1,2,3,4,5)
+# damage = Deepspace::Damage.newNumericWeapons(2,2)
+# prueba = Deepspace::EnemyStarShip.new("Prueba", 2.0, 3.0, loot, damage)
+# puts prueba.name
+# puts prueba.ammoPower
+# puts prueba.shieldPower
+# puts prueba.loot
+# puts prueba.damage
+# puts prueba.to_s
+# puts prueba.protection
+# puts prueba.fire
+# puts prueba.receiveShot(4.0)
