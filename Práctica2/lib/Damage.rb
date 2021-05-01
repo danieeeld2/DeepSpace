@@ -87,18 +87,27 @@ module Deepspace
     # @param s [ShieldBooster] colección de escudos
     # @return [Damage] version reducida
     def adjust(w, s)
-      if @nWeapons != -1
-        self.class.newNumericWeapons([@nWeapons, w.length].min, [@nShields, s.length].min)
+      limit_nshields = [s.length, nShields].min
+
+      if weapons==nil
+        limit_nweapons = [w.length, nWeapons].min
+          return Damage.newNumericWeapons(limit_nshields,limit_nweapons)
+
       else
-        weapons_copy = @weapons.clone
+        result = []
+          w_aux = w.clone
+          weapons.each do |element|
+            indice = arrayContainsType(w_aux, element)
+              
 
-        new_weapons = w.map do |weapon|
-          weapons_copy.delete_at(weapons_copy.index(weapon.type) || weapons_copy.length)
-        end
+              if indice != -1
+                result.push(element)
+                  w_aux.delete_at(indice)
+              end
+          end
 
-        new_weapons.compact!
+          Damage.newSpecificWeapons(limit_nshields, result)
 
-        self.class.newSpecificWeapons(new_weapons, [@nShields, s.length].min)
       end
     end
 
@@ -145,7 +154,7 @@ module Deepspace
   end
 end
 
-# # Código de prueba
+# # # Código de prueba
 # prueba1 = Deepspace::Damage.newNumericWeapons(2,2)
 # puts prueba1.nShields
 # puts prueba1.nWeapons
@@ -156,7 +165,10 @@ end
 # armas = []
 # armas << arma1
 # armas << arma2
-# prueba2 = Deepspace::Damage.newSpecificWeapons(3,armas)
+# arma = []
+# arma << arma1.type()
+# arma << arma2.type()
+# prueba2 = Deepspace::Damage.newSpecificWeapons(3,arma)
 # puts prueba2.nShields
 # puts prueba2.nWeapons
 # puts prueba2.weapons
@@ -166,11 +178,17 @@ end
 # prueba4 = Deepspace::Damage.newCopy(prueba2)
 # puts prueba4.to_s
 # puts prueba1.hasNoEffect
-# # puts prueba2.arrayContainsType(armas,Deepspace::WeaponType::LASER) #-> Este método necesita comprobaciones
-# # prueba3 = prueba2.adjust([Deepspace::WeaponType::LASER, Deepspace::WeaponType::MISSILE],["test"]) #-> Este método necesita comprobaciones
+# puts "-----------"
+# prueba3 = prueba2.adjust(armas,["test"]) #-> Este método necesita comprobaciones
+# puts prueba2.to_s
+# puts prueba3.to_s
+# puts "-----------"
+# puts prueba1.nWeapons
 # prueba1.discardWeapon(arma1)
 # puts prueba1.nWeapons
-# prueba2.discardWeapon(arma1) #-> Necesita revisión
+# puts prueba2.weapons
+# prueba2.discardWeapon(arma1)
+# puts " "
 # puts prueba2.weapons
 # prueba1.discardShieldBooster
 # puts prueba1.nShields
