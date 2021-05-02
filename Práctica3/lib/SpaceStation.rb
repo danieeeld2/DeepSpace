@@ -1,4 +1,4 @@
-#encoding: utf-8
+#encoding:utf-8
 
 require_relative 'SuppliesPackage'
 require_relative 'Hangar'
@@ -12,167 +12,53 @@ require_relative 'SpaceStationToUI'
 
 module Deepspace
   class SpaceStation
-    # Atributos de clase
-    # @!attribute [Integer] Máxima cantidad de unidades de combustible que puede tener una estación
+
+    # @!attribute [Integer] Maximo de combustible permitido
     @@MAXFUEL = 100
 
-    # @!attribute[Float] Unidades de escudo que se pierden por cada unidad de potencia de disparo recibida
+    # @!attribute [Float] Unidades de escudo perdidaspor disparo
     @@SHIELDLOSSPERUNITSHOT = 0.1
 
     # Constructor
-    # @param n [String] nombre de la estación
-    # @param s [SuppliesPackage]
-    def initialize(n, s)
+    # @param _name [String] nombre de la estación
+    # @param _supplies [SuppliesPackage] paquete de ayuda inicial
+    def initialize(_name, _supplies)
       # @!attribute [String] nombre de la estación
-      @name = n
+      @name = _name
 
-      # @!attribute [Float] ammoPower
+      # @!attribute [Float] potencia de disparo
       @ammoPower = 0.0
 
-      # @!attribute [Float] fuelUnits
+      # @!attribute [Float] unidades de combustible
       @fuelUnits = 0.0
 
-      # @!attribute [Integer] nMedals
+      # @!attribute [Integer] numero de medallas
       @nMedals = 0
 
-      # @!attribute [FLoat] shieldPower
+      # @!attribute [Float] potencia de escudo
       @shieldPower = 0.0
 
-      # @!attribute [Damage] Daño pendiente
+      # @!attribute [Damage] daño pendiente
       @pendingDamage = nil
 
-      # @!attribute [Array<Weapon>] Array de armas
+      # @!attribute [Array<Weapon>] array de armas
       @weapons = []
 
-      # @!attribute [Array<ShieldBooster>] Array de escudos
+      # @!attribute [Array<ShieldBooster] array de escudos
       @shieldBoosters = []
 
-      # @!attribute [Hangar]
+      # @!attribute [Hangar] hangar
       @hangar = nil
 
-      # Añadimos los supplies
-      receiveSupplies(s)
+      receiveSupplies(_supplies)
     end
 
-    # Getters
-    attr_reader :name, :ammoPower, :fuelUnits, :nMedals, :shieldPower, :pendingDamage, :weapons, :shieldBoosters, :hangar
+    attr_reader :ammoPower, :fuelUnits, :hangar, :name, :nMedals,
+                :pendingDamage, :shieldBoosters, :shieldPower, :weapons
 
-    # Fija la cantidad de combustible
-    # @param f [Float] Cantidad de combustible
-    # @note no debe exceder el límite
-    def assignFuelValue(f)
-      if f <= @@MAXFUEL
-        @fuelUnits = f
-      else
-        @fuelUnits = @@MAXFUEL
-      end
-    end
-
-    # Si el daño pendiente no tiene efecto fija la referencia a nulo
-    def cleanPendingDamage
-      if !@pendingDamage.nil?
-        if @pendingDamage.hasNoEffect
-          @pendingDamage = nil
-        end
-      end
-    end
-
-    # Si se dispone de hangar, devuelve el resultado de intentar añadir un arma al mismo
-    # @param w [Weapon] arma a añadir
-    # @return [Boolean]  el resultado. Si no se dispone de hangar retorna false
-    def receiveWeapon(w)
-      if @hangar == nil
-        return false
-      else
-        return @hangar.addWeapon(w)
-      end
-    end
-
-    # Si se dispone de hangar, devuelve el resultado de intentar añadir el potenciador de escudo al mismo
-    # @param s [ShieldBooster] potenciador de escudo
-    # @return [Boolean] el resultado. Si no se dispone de hangar devuelve false
-    def receiveShieldBooster(s)
-      if @hangar == nil
-        return false
-      else
-        return @hangar.addShieldBooster(s)
-      end
-    end
-
-    # Recibe un hangar
-    # Si no se dispone de hangar, se coloca el nuevo. Si ya se tiene hangar, no hace nada
-    # @param h [Hangar] hangar a recibir
-    def receiveHangar(h)
-      if @hangar == nil
-        @hangar = h
-      end
-    end
-
-    # Fija la referencia de hangar a null
-    def discardHangar
-      @hangar = nil
-    end
-
-    # Incrementan los valores de los atributos según el contenido del paquete
-    # @param s [SuppliesPackage] paquete
-    def receiveSupplies(s)
-      @ammoPower += s.ammoPower
-      assignFuelValue(@fuelUnits + s.fuelUnits)
-      @shieldPower += s.shieldPower
-    end
-
-    # Se calcula el parámetro ajustado y se almacena en elsitio correspondiente
-    # @param d [Damage] daño
-    def setPendingDamage(d)
-      if !d.nil?
-        @pendingDamage = d.adjust(@weapons, @shieldBoosters)
-      end
-    end
-
-    # Intenta montar un arma del hangar en la estación
-    # @param i [Integer] índice del arma del hangar
-    def mountWeapon(i)
-      if i >= 0 && i < @hangar.weapons.length
-        if !@hangar.nil?
-          new_weapon = @hangar.removeWeapon(i)
-          if !new_weapon.nil?
-            @weapons << new_weapon
-          end
-        end
-      end
-    end
-
-    # Intenta montar un escudo del hangar en la estación
-    # @param i [Integer] índice del escudo
-    def mountShieldBooster(i)
-      if i >= 0 && i < @hangar.shieldBoosters.length
-        if !@hangar.nil?
-          new_shield = @hangar.removeShieldBooster(i)
-          if !new_shield.nil?
-            @shieldBoosters << new_shield
-          end
-        end
-      end
-    end
-
-    # Solicita descartar un arma del hangar
-    # @param i [Integer] índice del arma a descartar
-    def discardWeaponInHangar(i)
-      if !@hangar.nil?
-        @hangar.removeWeapon(i)
-      end
-    end
-
-    # Solicita descartar un escudo del hangar
-    # @param i [Integer] índice del arma a descartar
-    def discardShieldBoosterInHangar(i)
-      if !@hangar.nil?
-        @hangar.removeShieldBooster(i)
-      end
-    end
-
-    # Consulta la velocidad de la estación espacial
-    def getSpeed
+    # Velocidad de la estación
+    # @return [Float] velocidad
+    def speed
       if @@MAXFUEL == 0
         raise "Zero division at SpaceStation.speed(): MAXFUEL cannot be zero"
         return 0
@@ -181,15 +67,8 @@ module Deepspace
       end
     end
 
-    # Decremente las unidades de combustible como consecuencia del desplazamiento
-    def move
-      @fuelUnits -= @fuelUnits * getSpeed
-      if @fuelUnits < 0
-        @fuelUnits = 0
-      end
-    end
-
-    # Comprueba si la estación espacial está en un estado válido
+    # Comprueba el estado de la estación espacial
+    # @return [Boolean] true si no queda daño pendiente, false en caso contrari
     def validState
       if @pendingDamage.nil?
         return true
@@ -198,62 +77,195 @@ module Deepspace
       end
     end
 
-    # Elimina armas y escudos sin usos restantes
+    # Asigna unidades de combustible a la estación
+    # @param f [Float] combustible a ser asignado
+    def assignFuelValue(f)
+      if f < @@MAXFUEL
+        @fuelUnits = f
+      else
+        @fuelUnits = @@MAXFUEL
+      end
+    end
+
+    # Almacena el daño pendiente
+    # @param d [Damage] daño
+    def setPendingDamage(d)
+      if !d.nil?
+        @pendingDamage = d.adjust(@weapons, @shieldBoosters)
+      end
+    end
+
+    # Elimina el daño pendiente, si este no tiene efecto
+    def cleanPendingDamage
+      if !@pendingDamage.nil?
+        if @pendingDamage.hasNoEffect
+          @pendingDamage = nil
+        end
+      end
+    end
+
+    # Añade un arma al hangar
+    # @param [Weapon] arma a añadir
+    # @return [Boolean] true si se completa la operación con éxito, false en caso contrario
+    def receiveWeapon(w)
+      if !hangar.nil?
+        return @hangar.addWeapon(w)
+      else
+        return false
+      end
+    end
+
+    # Añade un escudo al hangar
+    # @param [ShieldBooster] escudo a añadir
+    # @return [Boolean] true si se añade con éxito, false en caso contrario
+    def receiveShieldBooster(s)
+      if !hangar.nil?
+        return @hangar.addShieldBooster(s)
+      else
+        return false
+      end
+    end
+
+    # Añade un hangar
+    # @param h [Hangar] hangar
+    def receiveHangar(h)
+      if @hangar.nil?
+        @hangar = h
+      end
+    end
+
+    # Elimina el hangar actual
+    def discardHangar
+      @hangar = nil
+    end
+
+    # Elimina un arma del hangar
+    # @param i [Integer] posición del arma en el hangar
+    def discardWeaponInHangar(i)
+      if !@hangar.nil?
+        @hangar.removeWeapon(i)
+        #else
+        #	raise "WARNING! Trying to discard a weapon where no hangar is available, at SpaceStation.discardWeaponInHangar()"
+      end
+    end
+
+    # Elimina un escudo del hangar
+    # @param i [Integer] posición del escudo a eliminar
+    def discardShieldBoosterInHangar(i)
+      if !@hangar.nil?
+        @hangar.removeShieldBooster(i)
+        #else
+        #	raise "WARNING! Trying to discard a shield booster where no hangar is available, at SpaceStation.discardShieldBoosterInHangar()"
+      end
+    end
+
+    # Recibe suministro y los procesa
+    # @param s [SuppliesPackage] suministros recibidos
+    def receiveSupplies(s)
+      @ammoPower += s.ammoPower
+      assignFuelValue(@fuelUnits + s.fuelUnits)
+      @shieldPower += s.shieldPower
+    end
+
+    # Monta un arma del hangar en la estacón
+    # @param i [Integer] posición del arma a montar en el hanga
+    def mountWeapon(i)
+      if i >= 0 && i < @hangar.weapons.length
+        if !@hangar.nil?
+          # New weapon is deleted from the hangar
+          new_weapon = @hangar.removeWeapon(i)
+          if !new_weapon.nil?
+            @weapons << new_weapon
+          else
+            raise "WARNING! Trying to add a nil weapon on SpaceStation.mountWeapon()"
+          end
+        else
+          raise "WARNING! No hangar available at SpaceStation.mountWeapon()"
+        end
+      end
+    end
+
+    # Monta un escudo del hangar en la estación
+    # @param i [Integer] posición del escudo en el hangar
+    def mountShieldBooster(i)
+      if i >= 0 && i < @hangar.shieldBoosters.length
+        if !@hangar.nil?
+          # New shield booster is deleted from the hangar
+          new_shield = @hangar.removeShieldBooster(i)
+          if !new_shield.nil?
+            @shieldBoosters << new_shield
+          else
+            raise "WARNING! Trying to add a nil shield on SpaceStation.mountShieldBooster()"
+          end
+        else
+          raise "WARNING! No hangar available at SpaceStation.mountShieldBooster()"
+        end
+      end
+    end
+
+    # Mueve la estación espacial
+    def move
+      @fuelUnits -= @fuelUnits * speed
+      if @fuelUnits <= 0
+        @fuelUnits = 0
+      end
+    end
+
+    # Elimina las armas montadas
     def cleanUpMountedItems
+      # Filtering weapons
       @weapons = @weapons.select { |weapon| weapon.uses > 0 }
+
+      # Filtering shields
       @shieldBoosters = @shieldBoosters.select { |shield| shield.uses > 0 }
     end
 
-    # String representation of the object
-    # @return [String] string representation
-    def to_s
-      getUIversion().to_s
-    end
-
-    # To UI
-    def getUIversion
-      return SpaceStationToUI.new(self)
-    end
-
-    ########### Métodos Práctica 3 ###############
-
     # Realiza un disparo
-    # @return [Float] la potencia de disparo
+    # @return [Float] potencia de disparo
     def fire
       factor = 1.0
+
       @weapons.each do |w|
         factor *= w.useIt
       end
-      return factor
+
+      return @ammoPower * factor
     end
 
-    # Usa el escudo de protección
-    # @return [Float] Energía del escudo
+    # Aplica protección del escudo
+    # @return [Float] potencia del escudo
     def protection
       factor = 1.0
+
       @shieldBoosters.each do |s|
         factor *= s.useIt
       end
-      return factor
+
+      return @shieldPower * factor
     end
 
-    # Realiza las operaciones relacionadas con la recepción de un impacto enemigo
+    # Interpreta el resultado de recibir un disparo
     # @param shot [Float] disparo enemigo
-    # @return [ShotResult] resultado del disparo
+    # @return [Boolean] true si resiste el impacto, false en caso contrario
     def receiveShot(shot)
-      if protection >= shot
-        @shieldPower -= @@SHIELDLOSSPERUNITSHOT*shot
-        if @shieldPower<0
-          @shieldPower = 0.0
+      myProtection = protection
+
+      if myProtection >= shot
+        @shieldPower -= @@SHIELDLOSSPERUNITSHOT
+        if @shieldPower < 0
+          shieldPower = 0.0
         end
-        return ShotResult::RESIST 
+
+        return ShotResult::RESIST
+      else
+        @shieldPower = 0.0
+
+        return ShotResult::DONOTRESIST
       end
-      @shieldPower = 0.0
-      return  ShotResult::DONOTRESIST
     end
 
-    # Recepción de un botín
-    # @param loot [Loot] botín recibido
+    # Recibe un loot
+    # @param [Loot] loot
     def setLoot(loot)
       dealer = CardDealer.instance
       h = loot.nHangars
@@ -281,12 +293,12 @@ module Deepspace
         receiveShieldBooster(sh)
       end
 
-      @nMedals += loot.nMedals
+      medals = loot.nMedals
+      @nMedals += medals
     end
 
-    # Se intenta descartar el arma con índice i de la colección de armas en uso
-    # Además debe actualizar el daño pendiente
-    # @param i [Integer] índice del arma
+    # Descarta un arma montada en la estación espacial
+    # @param i [Integer] indice del arma a descartar
     def discardWeapon(i)
       size = @weapons.length
       if i >= 0 && i < size
@@ -298,9 +310,8 @@ module Deepspace
       end
     end
 
-    # Se intenta descartar el potenciador de escudo con índice i
-    # Además se debe actualizar el daño pendiente
-    # @param i [Integer] índice del arma
+    # Descarta un escudo montado en la estación espacial
+    # @param i [Integer] indice del escudo a descartar
     def discardShieldBooster(i)
       size = @shieldBoosters.length
       if i >= 0 && i < size
@@ -312,92 +323,22 @@ module Deepspace
       end
     end
 
+    # String representation, UI version
+    # ==========================================================================
+
+    # String representation of the object
+    # @return [String] string representation
+    def to_s
+      getUIversion().to_s
+    end
+
+    # To UI
+    def getUIversion
+      return SpaceStationToUI.new(self)
+    end
+
+    # Visibility specifiers
+    # ==========================================================================
     private :assignFuelValue, :cleanPendingDamage
   end
-end
-
-# Código de prueba práctica 2
-# supplies = Deepspace::SuppliesPackage.new(1,2,3)
-# prueba = Deepspace::SpaceStation.new("Prueba",supplies)
-# puts prueba.name
-# puts prueba.ammoPower
-# puts prueba.fuelUnits
-# puts prueba.nMedals
-# puts prueba.shieldPower
-# puts prueba.pendingDamage
-# puts prueba.weapons
-# puts prueba.shieldBoosters
-# puts prueba.hangar
-# puts prueba.to_s
-# hangar = Deepspace::Hangar.new(4)
-# weapon = Deepspace::Weapon.new('arma', Deepspace::WeaponType::PLASMA, 8)
-# shield = Deepspace::ShieldBooster.new('escudo', 1, 1)
-# puts prueba.receiveWeapon(weapon)
-# puts prueba.receiveShieldBooster(shield)
-# prueba.receiveHangar(hangar)
-# puts prueba.receiveWeapon(weapon)
-# puts prueba.receiveShieldBooster(shield)
-# puts prueba.hangar
-# prueba.mountWeapon(0)
-# prueba.mountShieldBooster(0)
-# puts prueba.hangar
-# puts prueba.weapons
-# puts prueba.shieldBoosters
-# prueba.discardHangar
-# puts prueba.hangar
-# prueba.receiveHangar(hangar)
-# puts prueba.receiveWeapon(weapon)
-# puts prueba.receiveShieldBooster(shield)
-# puts prueba.hangar
-# prueba.discardWeaponInHangar(0)
-# prueba.discardShieldBoosterInHangar(0)
-# puts prueba.hangar
-# puts prueba.getSpeed
-# puts prueba.fuelUnits
-# prueba.move
-# puts prueba.fuelUnits
-# weapon2 = Deepspace::Weapon.new('arma', Deepspace::WeaponType::PLASMA, 0)
-# puts prueba.receiveWeapon(weapon2)
-# prueba.mountWeapon(0)
-# puts prueba.weapons 
-# puts "---"
-# prueba.cleanUpMountedItems
-# puts prueba.weapons
-# puts prueba.validState
-# damage = Deepspace::Damage.newNumericWeapons(2,2)
-# prueba.setPendingDamage(damage)
-# puts prueba.pendingDamage
-# puts prueba.validState
-
-# Código para práctica 3
-# supplies = Deepspace::SuppliesPackage.new(1,2,3)
-# prueba = Deepspace::SpaceStation.new("Prueba",supplies)
-# hangar = Deepspace::Hangar.new(4)
-# weapon = Deepspace::Weapon.new('arma', Deepspace::WeaponType::PLASMA, 8)
-# shield = Deepspace::ShieldBooster.new('escudo', 2, 2)
-# prueba.receiveHangar(hangar)
-# prueba.receiveWeapon(weapon)
-# prueba.receiveWeapon(weapon)
-# prueba.receiveShieldBooster(shield)
-# prueba.receiveShieldBooster(shield)
-# prueba.mountWeapon(0)
-# prueba.mountShieldBooster(0)
-# prueba.mountWeapon(0)
-# prueba.mountShieldBooster(0)
-# puts prueba.weapons
-# puts prueba.shieldBoosters
-# # puts prueba.fire
-# # puts prueba.protection
-# puts prueba.receiveShot(2.0)
-# puts prueba.shieldPower
-# sp = Deepspace::SuppliesPackage.new(0,0,0)
-# loot = Deepspace::Loot.new(1,2,3,4,5)
-# prueba2 = Deepspace::SpaceStation.new("pruebaa",sp)
-# prueba2.setLoot(loot)
-# puts prueba2.to_s
-# puts "____________________________________"
-# puts prueba.weapons
-# puts prueba.shieldBoosters
-# prueba.discardWeapon(1)
-# prueba.discardShieldBooster(1)
-# puts prueba.to_s
+end	 

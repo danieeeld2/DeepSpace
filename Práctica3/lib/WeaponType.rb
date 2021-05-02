@@ -1,27 +1,27 @@
-#encoding: utf-8
-
-# Representa a los tipos de arma del juego. Cda tipo tendrá 
-# un valor numérico asociado a la potencia de disparo
+#encoding:utf-8
 
 module Deepspace
-    module WeaponType
-        class Type
-            def initialize(p)   #Constructor
-                @power = p
-            end
+  module WeaponType
 
-            def power           # Método get
-                @power
-            end
+    class Type
 
-            
-        end
+      def initialize(pow, _name)
+        @POWER = pow
+        @name = _name
+      end
 
-        LASER=Type.new(2.0)
-        MISSILE=Type.new(3.0)
-        PLASMA=Type.new(4.0)
+      def power
+        return @POWER
+      end
+
+      def to_s
+        return "#{@name}"
+      end
     end
-end
 
-# Código de comprobación
-#puts Deepspace::WeaponType::PLASMA.power
+    LASER = Type.new(2.0, "LASER")
+    MISSILE = Type.new(3.0, "MISSILE")
+    PLASMA = Type.new(4.0, "PLASMA")
+  end
+end
+    

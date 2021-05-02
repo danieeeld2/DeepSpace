@@ -1,48 +1,52 @@
-#encoding: utf-8
+#encoding:utf-8
 
 require_relative 'ShieldToUI'
 
-# Representa a los potenciadores de escudos que pueden tener
-# las naves espaciales
-
 module Deepspace
   class ShieldBooster
-    def initialize(a_name, a_boost, a_uses)
-      @name = a_name
-      @boost = a_boost
-      @uses = a_uses
+
+    # Constructor
+    # @param _name [String] nombre del escudo
+    # @param _boost [Float] cantidad de daño que absorbe
+    # @param _uses [Integer] usos restantes
+    def initialize(_name, _boost, _uses)
+      # @!attribute [String] nombre del escudo
+      @name = _name
+
+      # @!attribute [Float] cantidad de daño que absorb
+      @boost = _boost
+
+      # @!attribute [Integer] how many uses the shield booster has
+      @uses = _uses
     end
 
-    def self.newCopy(shield)
-      new(shield.name, shield.boost, shield.uses)
+    # Constructor de copia
+    # @param origin [ShieldBooster] instancia a copiar
+    # @return [ShieldBooster] la copia
+    def self.newCopy(origin)
+      return new(origin.name, origin.boost, origin.uses)
     end
 
-    def name
-      @name
-    end
+    attr_reader :boost, :uses, :name
 
-    def boost
-      @boost
-    end
-
-    def uses
-      @uses
-    end
-
+    # Usa el escudo
+    # @return [Float] potencia escudo
     def useIt
-      if uses > 0
+      if @uses > 0
         @uses -= 1
-        @boost
+        return @boost
       else
-        1.0
+        return 1.0
       end
     end
+
+    # String representation, UI version
+    # ==========================================================================
 
     # String representation of the object
     # @return [String] string representation
     def to_s
-      message = "[ShieldBooster]-> Boost: #{@boost}, Uses: #{@uses}"
-      return message
+      getUIversion().to_s
     end
 
     # To UI
@@ -50,13 +54,5 @@ module Deepspace
       return ShieldToUI.new(self)
     end
   end
-end
+end  
 
-# Código de prueba
-# prueba =  Deepspace::ShieldBooster.new('prueba', 1, 1)
-# puts prueba.name
-# prueba2 = Deepspace::ShieldBooster.new('prueba2', 1, 0)
-# puts prueba.uses
-# pruebacopy = Deepspace::ShieldBooster.new('pruebacopy', 2, 2)
-# prueba3 = Deepspace::ShieldBooster.newCopy(pruebacopy)
-# puts prueba3.boost

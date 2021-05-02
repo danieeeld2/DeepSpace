@@ -1,68 +1,66 @@
-#enconding: utf-8
+#encoding:utf-8
 
 require_relative 'WeaponType'
 require_relative 'WeaponToUI'
 
-# Representa a las armas de las que puede disponer una estación 
-# espacial para potenciar su energá al disparar
-
 module Deepspace
-    class Weapon 
-        def initialize(a_name, a_type, a_uses)
-            @name = a_name
-            @type = a_type 
-            @uses = a_uses 
-        end
+  class Weapon
 
-        def self.newCopy(weapon)
-            new(weapon.name, weapon.type, weapon.uses)
-        end
+    # Constructor
+    # @param _name [String] nombre del arma
+    # @param _type [WeaponType] tipo de arma
+    # @param _uses [Integer] número de usos restantes
+    def initialize(_name, _type, _uses)
+      # @!attribute [String] nombre del arma
+      @name = _name
 
-        def name 
-            @name 
-        end
+      # @!attribute [WeaponType] tipo de arma
+      @type = _type
 
-        def type 
-            @type 
-        end
-
-        def uses 
-            @uses
-        end
-
-        def power()
-            type.power
-        end
-
-        def useIt
-            if uses > 0
-                @uses-=1
-                power()
-            else
-                1.0 
-            end
-        end
-
-        # String representacion
-        # @return [String] representacion
-        def to_s
-            message = "[Weapon]-> Name: #{@name}, Type: #{@type}, Power: #{power}, " \
-                    + "Uses: #{@uses}"
-            return message
-        end
-    
-        # To UI
-        def getUIversion
-            return WeaponToUI.new(self)
-        end
+      # @!attribute [Intenger] número de usos restante
+      @uses = _uses
     end
-end
 
-# Código de prueba
-# prueba = Deepspace::Weapon.new('prueba', Deepspace::WeaponType::PLASMA, 8)
-# puts prueba.type.power
-# puts prueba.power()
-# puts prueba.useIt()
-# prueba2 = Deepspace::Weapon.new('prueba2', Deepspace::WeaponType::LASE, 10)
-# prueba3 = Deepspace::Weapon.newCopy(prueba2)
-# puts prueba3.type.power
+    # Constructor de copia
+    # @param origin [Weapon] instancia a copiar
+    def self.newCopy(origin)
+      return new(origin.name, origin.type, origin.uses)
+    end
+
+    attr_reader :type, :uses, :name
+
+    # Consulta la potencia del arma
+    # @return [Float] poder del arma
+    def power
+      return @type.power
+    end
+
+    # Usa el arma y decrementa sus usos
+    # @return [Float] devuelve la potencia del disparo
+    def useIt
+      if @uses > 0
+        @uses = @uses - 1
+        return power
+      else
+        return 1.0
+      end
+    end
+
+    # String representation, UI version
+    # ==========================================================================
+
+    # String representation of the object
+    # @return [String] string representation
+    def to_s
+      message = "[Weapon]-> Name: #{@name}, Type: #{@type}, Power: #{power}, " \
+				 + "Uses: #{@uses}"
+      return message
+    end
+
+    # To UI
+    def getUIversion
+      return WeaponToUI.new(self)
+    end
+  end
+
+end  

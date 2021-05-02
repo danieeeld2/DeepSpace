@@ -1,37 +1,41 @@
-#enconding: utf-8
-
-# Representa los suministros para una estación espacial
+#encoding:utf-8
 
 module Deepspace
-    class SuppliesPackage
-        def initialize(ammopower, fuelunits, shieldpower)
-            @ammoPower = ammopower
-            @fuelUnits = fuelunits
-            @shieldPower = shieldpower
-        end
 
-        def self.newCopy(package)   # Constructor de copia
-            new(package.ammoPower, package.fuelUnits, package.shieldPower)
-        end
+  class SuppliesPackage
 
-        def ammoPower 
-            @ammoPower
-        end
+    # Constructor
+    # @param _ammoPower [Float] potencia de disparo
+    # @param _fuelUnits [Float] unidades de combustible
+    # @param _shieldPower [Float] potencia escudos
+    def initialize(_ammoPower, _fuelUnits, _shieldPower)
+      # @!attribute [Float] potencia de disparo
+      @ammoPower = _ammoPower
 
-        def fuelUnits
-            @fuelUnits
-        end
+      # @!attribute [Float] unidades de combustible
+      @fuelUnits = _fuelUnits
 
-        def shieldPower
-            @shieldPower
-        end
+      # @!attribute [Float] potencia escudos
+      @shieldPower = _shieldPower
     end
-end
 
-# Código de prueba
-# prueba = Deepspace::SuppliesPackage.new(1,1,1)
-# puts prueba.fuelUnits
-# pruebacopy = Deepspace::SuppliesPackage.new(2,2,2)
-# puts pruebacopy.fuelUnits
-# prueba2 = Deepspace::SuppliesPackage.newCopy(pruebacopy)
-# puts prueba2.fuelUnits
+    # Consructor de copia
+    # @param origin [SuppliesPackage] instancia a copiar
+    def self.newCopy(origin)
+      return new(origin.ammoPower, origin.fuelUnits, origin.shieldPower)
+    end
+
+    attr_reader :ammoPower, :fuelUnits, :shieldPower
+
+    # String representation
+    # ==========================================================================
+
+    # String representation of the object
+    # @return [String] string representation
+    def to_s
+      message = "[SuppliesPackage]-> ammoPower: #{@ammoPower}, " \
+				 + "fuelUnits: #{@fuelUnits}, shieldPower: #{@shieldPower}"
+      return message
+    end
+  end
+end  

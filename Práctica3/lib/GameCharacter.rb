@@ -1,13 +1,8 @@
-#encoding: utf-8
-
-# Enumerado que representa los personajes del juego
+#encoding:utf-8
 
 module Deepspace
-    module GameCharacter
-        ENEMYSTARSHIP= :enemystarship 
-        SPACESTATION= :spacestation 
-    end
+  module GameCharacter
+    SPACESTATION = :spacestation
+    ENEMYSTARSHIP = :enemystarship
+  end
 end
-
-# Código de comprobación
-# puts Deepspace::GameCharacter::SPACESTATION

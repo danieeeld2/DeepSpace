@@ -1,51 +1,50 @@
-#encoding: utf-8
+#encondig:utf-8
 
 require_relative 'LootToUI'
 
-# Representa el botín que se obtiene al vencer a una nave enemiga
-
 module Deepspace
-    class Loot
-        def initialize(supplies, weapons, shields, hangars, medals)
-            @nSupplies = supplies
-            @nWeapons  = weapons
-            @nShields  = shields
-            @nHangars  = hangars
-            @nMedals   = medals
-        end
+  class Loot
 
-        def nSupplies
-            @nSupplies
-        end
+    # Constructor
+    # @param _nSupplies [Integer] número de paquetes recibidos
+    # @param _nWeapons [Integer] número de armas recibidas
+    # @param _nShields [Integer] número de escudos recibidos
+    # @param _nHangars [Integer] número de hangares recibidos
+    # @param _nMedals [Integer] número de medallas recibidas
+    def initialize(_nSupplies, _nWeapons, _nShields, _nHangars, _nMedals)
+      # @!attribute [Integer] número de paquetes recibidos
+      @nSupplies = _nSupplies
 
-        def nWeapons
-            @nWeapons
-        end
+      # @!attribute [Integer] número de armas recibida
+      @nWeapons = _nWeapons
 
-        def nShields
-            @nShields
-        end
+      # @!attribute [Integer] número de escudos recibidos
+      @nShields = _nShields
 
-        def nHangars
-            @nHangars
-        end
+      # @!attribute [Integer] número de hangares recibidos
+      @nHangars = _nHangars
 
-        def nMedals
-            @nMedals
-        end
-
-        def to_s
-            getUIversion().to_s
-        end
-
-        # To UI
-        def getUIversion
-            return LootToUI.new(self)
-        end
-        
+      # @!attribute [Integer] número de medallas recibidas
+      @nMedals = _nMedals
     end
-end
 
-# Código de omprobación
-#prueba = Deepspace::Loot.new(1,1,1,1,1)
-#puts prueba.nHangars
+    # Getters
+    # ==========================================================================
+
+    attr_reader :nSupplies, :nWeapons, :nShields, :nHangars, :nMedals
+
+    # String representation, UI version
+    # ==========================================================================
+
+    # String representation of the object
+    # @return [String] string representation
+    def to_s
+      getUIversion().to_s
+    end
+
+    # To UI
+    def getUIversion
+      return LootToUI.new(self)
+    end
+  end
+end  

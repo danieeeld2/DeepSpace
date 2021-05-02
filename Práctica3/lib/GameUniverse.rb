@@ -1,4 +1,4 @@
-#encoding: utf-8
+#encoding:utf-8
 
 require_relative 'GameUniverseToUI'
 require_relative 'GameStateController'
@@ -13,87 +13,108 @@ require_relative 'EnemyStarShip'
 
 module Deepspace
   class GameUniverse
-    # @!attribute [Integer] cantidad de medallas necesarias para ganar el juego
+
+    # @!attribute [Integer] cantidad de medallas necesarias para ganar
     @@WIN = 10
 
     # Constructor
     def initialize
-      # @!attribute [GameStateController] estado del juego
+      # @!attribute [GameStateController] estado de la partida
       @gameState = GameStateController.new
 
-      # @!attribute [Integer] número de turnos
+      # @!attribute [Integer] numero de turnos transcurridos
       @turns = 0
 
-      # @!attribute [Dice] dado
+      # @!attribute [Dice] game dice
       @dice = Dice.new
 
-      # @!attribute [Integer] índice de la estación en juego
+      # @!attribute [Integer] indice de la estación espacial en juego
       @currentStationIndex = -1
 
       # @!attribute [SpaceStation] estación espacial actual
       @currentStation = nil
 
-      # @!attribute [Array<SpaceStation>] array de las estaciones que están jugando
+      # @!attribute [Array<SpaceStation>] array de todas las estaciones espaciales de la partida
       @spaceStations = []
 
-      # @!attribute [EnemyStarShip] estación enemiga actual
+      # @!attribute [EnemyStarShip] enemigo actual
       @currentEnemy = nil
     end
 
-    # Devuelve el estado de la partida
-    # @return [GameState] estado
+    # Getter for gameState
+    # @return [GameState] gameState
     def state
       return @gameState.state
     end
 
-    # Descarta un hangar de la estación espacial actualmente en juego
-    # Solo lo hace si el estado del juego es INIT o AFTERCOMBAT
+    # Elimina el hangar de la actual estación espacial
+    # Solo es posible hacerlo durante la fase de INIT o AFTERCOMBAT
     def discardHangar
       if state == GameState::INIT or GameState::AFTERCOMBAT
         @currentStation.discardHangar
       end
     end
 
-    # Descarta un escudo del hangar de la estación espacial actualmente en juego
-    # Solo lo hace si el estado del juego es INIT o AFTERCOMBAT
-    # @param i [Integer] índice del escudo a descartar
+    # Elimina un escudo montado de la estación espacial actual
+    # Solo es posible hacerlo durante la fase de INIT o AFTERCOMBAT
+    # @param i [Integer] posicion del escudo a eliminar
+    def discardShieldBooster(i)
+      if state == GameState::INIT or GameState::AFTERCOMBAT
+        @currentStation.discardShieldBooster(i)
+      end
+    end
+
+    # Elimina un escudo almacenado en el hangar de la estación espacial actual
+    # Solo es posible hacerlo durante la fase de INIT o AFTERCOMBAT
+    # @param i [Integer] posicion del escudo a eliminar
     def discardShieldBoosterInHangar(i)
       if state == GameState::INIT or GameState::AFTERCOMBAT
         @currentStation.discardShieldBoosterInHangar(i)
       end
     end
 
-    # Descarta un arma del hangar de la estación espacial actualmente en juego
-    # Solo lo hace si el estado del juego es INIT o AFTERCOMBAT
-    # @param i [Integer] índice del arma a descartar
+    # Elimina un arma montada de la estación espacial actual
+    # Solo es posible hacerlo durante la fase de INIT o AFTERCOMBAT
+    # @param i [Integer] posicion del arma a eliinar
+    def discardWeapon(i)
+      if state == GameState::INIT or GameState::AFTERCOMBAT
+        @currentStation.discardWeapon(i)
+      end
+    end
+
+    # Elimina un arma almacenada en el hangar de la actual estación espacial
+    # Solo es posible hacerlo durante la fase de INIT o AFTERCOMBAT
+    # @param i [Integer] posicion del arma a descartar
     def discardWeaponInHangar(i)
       if state == GameState::INIT or GameState::AFTERCOMBAT
         @currentStation.discardWeaponInHangar(i)
       end
     end
 
-    # Monta un escudo en la estación espacial actualmente en juego
-    # Solo lo hace si el estado del juego es INIT o AFTERCOMBAT
-    # @param i [Integer] índice donde montar el escudo
+    # Monta un escudo del hangar en la estación
+    # # Solo es posible hacerlo durante la fase de INIT o AFTERCOMBAT
+    # @param i [Integer] posicion en el hangar del escudo a montar
     def mountShieldBooster(i)
       if state == GameState::INIT or GameState::AFTERCOMBAT
         @currentStation.mountShieldBooster(i)
       end
     end
 
-    # Monta un arma en la estación espacial actualmente en juego
-    # Solo lo hace si el estado del juego es INIT o AFTERCOMBAT
-    # @param i [Integer] índice donde montar el arma
+    # Monta un arma del hangar en la estación espacial
+    # Solo es posible hacerlo durante la fase de INIT o AFTERCOMBAT
+    # @param i [Integer] posicion en el hangar del arma a montar
     def mountWeapon(i)
       if state == GameState::INIT or GameState::AFTERCOMBAT
         @currentStation.mountWeapon(i)
       end
     end
 
-    # Comprueba si la estación espacial jugando en ese turno cumple la condición de victoria
+    # Comprueba si la estación espacial actual ha ganado o no
     # @return [Boolean] true en caso afirmativo, false en caso contrario
     def haveAWinner
-      if !@currentStation.nil?
+      if @currentStation.nil?
+        raise "Warning! @currentStation nil on GameUniverse.haveAWinner()"
+      else
         if @currentStation.nMedals >= @@WIN
           return true
         else
@@ -102,31 +123,11 @@ module Deepspace
       end
     end
 
-    ######## Métodos Prñactica 3 ############
-
-    # Descarta un arma de la estación espacial
-    # Solo lo hace si el estado del juego es INIT o AFTERCOMBAT
-    # @param i [Integer] índice del arma a descartar
-    def discardWeapon(i)
-      if state == GameState::INIT or GameState::AFTERCOMBAT
-        @currentStation.discardWeapon(i)
-      end
-    end
-
-    # Descarta un escudo de la estación espacial
-    # Solo lo hace si el estado del juego es INIT o AFTERCOMBAT
-    # @param i [Integer] índice del escudo a descartar
-    def discardShieldBooster(i)
-      if state == GameState::INIT or GameState::AFTERCOMBAT
-        @currentStation.discardShieldBooster(i)
-      end
-    end
-
-    # Inicia una partida
-    # @param names [Array<String>] nombres de los jugadores
-    # A cada jugador se le crea una estación espacial con los objetos necesarios
-    # Tambíen establece el primer enemigo y quien empieza la partida
+    # Inicializa un partida
+    # @param names [Array<String>] array con los nombres de los jugadores
     def init(names)
+      # state = @gameState.state
+
       if state == GameState::CANNOTPLAY
         dealer = CardDealer.instance
         names.each do |name|
@@ -142,7 +143,8 @@ module Deepspace
           station.setLoot(lo)
         end
 
-        @currentStationIndex = @dice.whoStarts(names.length)
+        nPlayers = names.length
+        @currentStationIndex = @dice.whoStarts(nPlayers)
         @currentStation = @spaceStations[@currentStationIndex]
         @currentEnemy = dealer.nextEnemy
 
@@ -150,75 +152,41 @@ module Deepspace
       end
     end
 
-    # Realiza el cambio de turno
-    # Debe comprobar que el jugador actual no tiene daño pendiente
-    # @return [Boolean] true si se cambia el turno, false en caso contrario
+    # Si no existe daño pendiente, pasa al siguiente jugador
+    # @return [Boolean] true en caso de poder pasar de turno, false en caso contrario
     def nextTurn
+      # state = @gameState.state
+
       if state == GameState::AFTERCOMBAT
-        if @currentStation.validState
-          @currentStationIndex = (@currentStationIndex + 1) % @spaceStations.length
+        stationState = @currentStation.validState
+
+        if stationState
+          @currentStationIndex = (@currentStationIndex + 1) \
+						  % @spaceStations.length
           @turns += 1
 
           @currentStation = @spaceStations[@currentStationIndex]
           @currentStation.cleanUpMountedItems
 
-          dealer = CardDealer.instance
+          dealer = CardDealer.instance # behaviour introduced by Singleton
           @currentEnemy = dealer.nextEnemy
 
           @gameState.next(@turns, @spaceStations.length)
+
           return true
         end
+
         return false
       end
+
       return false
     end
 
-    # Se realiza un combate entre la estación espacial y el enemigo
-    # @param station [SpaceSttion] estación espacial
-    # @param enemy [EnemyStarShip] enemgo
-    # @return [CombatResult] resultado del combate
-    def combatGo(station, enemy)
-      ch = @dice.firstShot
-
-      if ch == GameCharacter::ENEMYSTARSHIP
-        fire = enemy.fire
-        result station.receiveShot(fire)
-        if result == ShotResult::RESIST
-          fire = @currentStation.fire
-          result = enemy.receiveShot(fire)
-          enemyWins = (result == ShotResult::RESIST)
-        else
-          enemyWins = true
-        end
-      else
-        fire = station.fire
-        result = enemy.receiveShot(fire)
-        enemyWins = (result == ShotResult::RESIST)
-      end
-
-      if enemyWins
-        s = station.speed
-        moves = @dice.spaceStationMoves(speed)
-        if !moves
-          damage = enemy.damage
-          station.setPendingDamage(damage)
-          combatResult = CombatResult::ENEMYWINS
-        else
-          station.move
-          combatResult = CombatResult::STATIONESCAPES
-        end
-      else
-        aLoot = enemy.loot
-        station.setLoot(aLoot)
-        combatResult = CombatResult::STATIONWINS
-      end
-
-      @gameState.next(@turns, @spaceStations.length)
-      return combatResult
-    end
-
-    # Realiza un combate, si el juego se encuentra en un estado permitidp
+    # Combate entre una estación y una nave enemiga
+    # @return [CombatResult] resultado de la batalla
     def combat
+      # state = @gameState.state
+
       if state == GameState::BEFORECOMBAT or GameState::INIT
         return combatGo(@currentStation, @currentEnemy)
       else
@@ -226,8 +194,84 @@ module Deepspace
       end
     end
 
-  end
-end
+    # Ejecución del combate
+    # @param station [SpaceStation] estación en combate
+    # @param enemy [EnemyStarShip] enemigo en combate
+    # @return [CombatResult] resultado del combate
+    def combatGo(station, enemy)
+      ch = @dice.firstShot
 
-# Código de prueba
-# No se puede comprobar hasta más adelante
+      if ch == GameCharacter::ENEMYSTARSHIP
+        fire = enemy.fire
+        result = station.receiveShot(fire)
+
+        if result == ShotResult::RESIST
+          fire = station.fire
+          result = enemy.receiveShot(fire)
+
+          enemyWins = (result == ShotResult::RESIST)
+        else
+          enemyWins = true
+        end
+      else
+        fire = station.fire
+        result = enemy.receiveShot(fire)
+
+        enemyWins = (result == ShotResult::RESIST)
+      end
+
+      if enemyWins
+        s = station.speed
+        moves = @dice.spaceStationMoves(s)
+
+        if !moves
+          damage = enemy.damage
+          station.setPendingDamage(damage)
+
+          combatResult = CombatResult::ENEMYWINS
+        else
+          station.move
+
+          combatResult = CombatResult::STATIONESCAPES
+        end
+      else
+        aLoot = enemy.loot
+        station.setLoot(aLoot)
+
+        combatResult = CombatResult::STATIONWINS
+      end
+
+      @gameState.next(@turns, @spaceStations.length)
+
+      return combatResult
+    end
+
+    # String representation, UI version
+    # ==========================================================================
+
+    # String representation of the object
+    # @return [String] string representation
+    def to_s
+      #message = "[GameUniverse] -> Game state: #{@gameState.to_s}," \
+      #		+ "Turns: #{@turns}, Dice: #{@dice.to_s}\n" \
+      #		+ "\tCurrent station: #{@currentStation.to_s}\n" \
+      #		+ "\tCurrent enemy: #{@currentEnemy.to_s}"
+      #return message
+      getUIversion().to_s
+    end
+
+    # To UI
+    def getUIversion
+      return EnemyToUI.new(self)
+    end
+
+    # Description:
+    # 	Gets the UI representation of the object
+    # Returns:
+    # 	GameUniverseToUI: the UI representation
+    def getUIversion
+      return GameUniverseToUI.new(@currentStation, @currentEnemy)
+    end
+  end
+
+end 

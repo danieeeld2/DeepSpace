@@ -1,4 +1,4 @@
-#encoding: utf-8
+#encoding:utf-8
 
 require_relative 'EnemyToUI'
 require_relative 'Damage'
@@ -6,54 +6,56 @@ require_relative 'Loot'
 require_relative 'ShotResult'
 
 module Deepspace
+
   class EnemyStarShip
+
     # Constructor
-    # @param n [String] name
-    # @param a [Float] ammoPower
-    # @param s [Float] shieldPower
-    # @param l [Loot] loot
-    # @param d [Damage] damage
-    def initialize(n, a, s, l, d)
-      # @!attribute [String] nombre de la nave
-      @name = n
+    # @param _name [String] nombre de la estación
+    # @param _ammoPower [Float] potencia de fuego
+    # @param _shieldPower [Float] poder de escudo
+    # @param _loot [Loot] loot
+    # @param _damage [Damage] daño
+    def initialize(_name, _ammoPower, _shieldPower, _loot, _damage)
+      # @!attribute [String] nombre de la estación
+      @name = _name
 
-      # @!attribute [Float] poder de armamento de la nave
-      @ammoPower = a
+      # @!attribute [Float] potencia de fuego
+      @ammoPower = _ammoPower
 
-      # @!attribute [Float] poder del escudo de la nave
-      @shieldPower = s
+      # @!attribute [Float] poder de escudo
+      @shieldPower = _shieldPower
 
-      # @!attribute [Loot] loot asociado a la nave
-      @loot = l
+      # @!attribute [Loot] loot
+      @loot = _loot
 
-      # @!attribute [Damage] daño asociado a la nave
-      @damage = d
+      # @!attribute [Damage] damage
+      @damage = _damage
     end
 
     # Constructor de copia
-    # @param e [EnemyStarShip] instancia a copiar
-    def self.newCopy(e)
-      return new(e.name, e.ammoPower, e.shieldPower, e.loot, e.damage)
+    # @param enemy [EnemyStarShip] instancia que va a ser copiada
+    # @return [EnemyStarShip] la copia
+    def self.newCopy(enemy)
+      return new(enemy.name, enemy.ammoPower, enemy.shieldPower, enemy.loot, enemy.damage)
     end
 
-    # Getters
     attr_reader :name, :ammoPower, :shieldPower, :loot, :damage
 
-    # Consulta el nivel de energía del escudo de la nave
-    # @return [Float] la energía del escudo (@shielPower)
-    def protection
-      return @shieldPower
-    end
-
-    # Consulta el nivel de energía de disparo de la nave
-    # @return [Float] la energía del disparo (@ammoPower)
+    # Devuelve la potencia de disparo
+    # @return [Float] ammoPower
     def fire
       return @ammoPower
     end
 
-    # Consulta el resultado de recibir un disparo de una determinada potencia
-    # @param shoat [Float] disparo
-    # @return [ShotResult] devuelve DONOTRESIST si el disparo es mas fuerte que el escudo, RESIST en caso contrario
+    # Devuelve la potencia de escudo
+    # @return [Float] shieldPower
+    def protection
+      return @shieldPower
+    end
+
+    # Resultado de recibir un disparo de la estación
+    # @param shot [Float] poder del disparo
+    # @return [ShotResult] si resiste o no
     def receiveShot(shot)
       if @shieldPower >= shot
         return ShotResult::RESIST
@@ -62,8 +64,11 @@ module Deepspace
       end
     end
 
-    # Representación string
-    # @return [String] string representación
+    # String representation, UI version
+    # ==========================================================================
+
+    # String representation of the object
+    # @return [String] string representation
     def to_s
       getUIversion().to_s
     end
@@ -75,16 +80,3 @@ module Deepspace
   end
 end
 
-# Código de prueba
-# loot = Deepspace::Loot.new(1,2,3,4,5)
-# damage = Deepspace::Damage.newNumericWeapons(2,2)
-# prueba = Deepspace::EnemyStarShip.new("Prueba", 2.0, 3.0, loot, damage)
-# puts prueba.name
-# puts prueba.ammoPower
-# puts prueba.shieldPower
-# puts prueba.loot
-# puts prueba.damage
-# puts prueba.to_s
-# puts prueba.protection
-# puts prueba.fire
-# puts prueba.receiveShot(4.0)

@@ -1,72 +1,67 @@
-#encoding: utf-8
+#encoding:utf-8
 
-require_relative 'DamageToUI'
 require_relative 'WeaponType'
 require_relative 'Weapon'
+require_relative 'DamageToUI'
 
 module Deepspace
-  # Clase que representa el daño producido a una estación espacial por
-  # una nave enemiga cuando se pierde un combate
   class Damage
-    # Constructor (Solo va a ser usado por el resto de constructores)
-    # @param w [Integer] cantidad de escudos perdidos
-    # @param s [Integer] cantidad de armas perdidas
-    # @param wp [Array<WeaponType>] array de armas perdidas
-    def initialize(w, s, wp)
-      # @!attribute [Integer] número de escudos perdidos
-      @nShields = w
+    # Constructor
+    # @param _nWeapons [Integer] numero de armas que se pierden
+    # @param _nShields [Integer] numero de escudos que se pierden
+    # @param _weapons [Array<WeaponType>] array de armas que se pierden
+    def initialize(_nWeapons, _nShields, _weapons)
+      # @!attribute [Integer] numero de armas que se pierden
+      @nWeapons = _nWeapons
 
-      # @!attribute [Integer] número de armas perdidas
-      @nWeapons = s
+      # @!attribute [Integer] numero de escudos que se pierden
+      @nShields = _nShields
 
-      # @!attribute [Array<WeaponsType>] array de armas perdidas
-      @weapons = wp
+      # @!attribute [Array<WeaponType>] array de armas que se pierden
+      @weapons = _weapons
     end
 
-    # Constructor numérico
-    # Inicializa la clase con el número de armas y escudos perdidos
-    # @param w [Integer] cantidad de escudos perdidos
-    # @param s [Integer] cantidad de armas perdidas
-    def self.newNumericWeapons(w, s)
-      return new(w, s, nil)
+    # Constructor
+    # @param _nWeapons [Integer] numero de armas que se pierden
+    # @param _nShields [Integer] numero de escudos que se pierden
+    def self.newNumericWeapons(_nWeapons, _nShields)
+      return new(_nWeapons, _nShields, nil)
     end
 
-    # Constructor array
-    # Inicializa la clase con un array de armas perdidas y el número de escudos perdidos
-    # @param w [Integer] cantidad de escudos perdidos
-    # @param wp [Array<WeaponType>] array de armas perdidas
-    def self.newSpecificWeapons(w, wp)
-      return new(w, -1, wp)
-      # -1 es un valor de distinción
+    # Constructor
+    # @param _weapons [Array<WeaponType>] array de armas que se pierden
+    # @param _nShields [Integer] numero de armas que se pierden
+    def self.newSpecificWeapons(_weapons, _nShields)
+      return new(-1, _nShields, _weapons)
     end
 
     # Constructor de copia
     # @param d [Damage] instancia a copiar
+    # @return [Damage] la copia
     def self.newCopy(d)
       if d.nWeapons == -1
-        return newSpecificWeapons(d.nShields, d.weapons)
+        return newSpecificWeapons(d.weapons, d.nShields)
       else
-        return newNumericWeapons(d.nShields, d.nWeapons)
+        return newNumericWeapons(d.nWeapons, d.nShields)
       end
     end
 
-    # Getters
-    attr_reader :nShields, :nWeapons, :weapons
+    attr_reader :nWeapons, :nShields, :weapons
 
-    # Consulta si el daño ha afectado o no
-    # @return [Boolean] devuelve true si el daño no tiene efecto, false en caso contrario
+    # Comprube si el daño hace efecto
+    # @return [Boolean] true en caso afirmativo, false en caso contraio
     def hasNoEffect
-      if nWeapons == -1
-        return @weapons.length + @nShields == 0
+      if @nWeapons == -1
+        return @weapons.empty? && @nShields == 0
       else
         return @nShields + @nWeapons == 0
       end
     end
 
-    # Busca el primer elemento de un tipo de arma en un array dado
-    # @param w [Array<Weapon>] array de armas
-    # @param t [WeaponType] tipo de arma buscado
-    # @return [Integer] posición de la primera correspondencia. -1 en caso de que no exista
+    # Busca en un vector de armas dados la primera coincidencia con el tipo de arma dado
+    # @param w [Array<Weapon>] el array de armas
+    # @param t [WeaponType] el tipo de arma
+    # @return [Integer] la posicion del arma. Si no se encuentra devuelve -1
     def arrayContainsType(w, t)
       i = 0
       w.each do |weapon_aux|
@@ -76,67 +71,68 @@ module Deepspace
           i += 1
         end
       end
-      # No se encontró elemento
+
+      # No element found
       return -1
     end
 
-    # Setters
-
-    # Crea una versión ajustada del objeto a los parámetros
-    # @param w [Weapon] w colección de armas
-    # @param s [ShieldBooster] colección de escudos
-    # @return [Damage] version reducida
+    # Crea un parametro ajustado a las instancias pasadas como argumentos
+    # @param w [Array<Weapon>] el array de armas a ajustar
+    # @param s [Array<ShieldBooster>] el array de escudos a ajustar
+    # @return [Damage] la copia ajustada
     def adjust(w, s)
-      limit_nshields = [s.length, nShields].min
+      if @nWeapons == -1
 
-      if weapons==nil
-        limit_nweapons = [w.length, nWeapons].min
-          return Damage.newNumericWeapons(limit_nshields,limit_nweapons)
+        weapons_copy = @weapons.clone
 
+        new_weapons = w.map do |weapon|
+          weapons_copy.delete_at(weapons_copy.index(weapon.type) || weapons_copy.length)
+        end
+
+        new_weapons.compact!
+
+        self.class.newSpecificWeapons(new_weapons, [@nShields, s.length].min)
       else
-        result = []
-          w_aux = w.clone
-          weapons.each do |element|
-            indice = arrayContainsType(w_aux, element)
-              
-
-              if indice != -1
-                result.push(element)
-                  w_aux.delete_at(indice)
-              end
-          end
-
-          Damage.newSpecificWeapons(limit_nshields, result)
-
+        self.class.newNumericWeapons([@nWeapons, w.length].min, [@nShields, s.length].min)
       end
     end
 
-    # Elimina un arma de la lista (si disponemos de lista), sino decrementa el contador de armas en 1
-    # @param w [Weapon] arma a eliminar
+    # Elimina un arma. Si no hay disponible una lista de armas, decrementa el número de armas en uno
+    # Si hay una lista, busca la primera ocurrencia de tipo de arma y elimina dicha pisicion
+    # @param w [Weapon] el arma a eliminar
     def discardWeapon(w)
       if @nWeapons == -1
         if @weapons.length != 0
           position = @weapons.index(w.type)
           if position != nil
             @weapons.delete_at(position)
+          else
+            raise "WARNING! No weapon type match at Damage.discardWeapon()"
           end
         end
       else
         if @nWeapons > 0
           @nWeapons -= 1
+        else
+          raise "WARNING! You tried to have negative weapons at Damage.discardWeapon()"
         end
       end
     end
 
-    # Decrementa en una unidad el número de potenciadores de escudo que deben eliminarse
+    # Elimina un escudo
     def discardShieldBooster
       if @nShields > 0
         @nShields -= 1
+      else
+        raise "WARNING! You tried to have negative shieldBoosters at Damage.discardShieldBooster()"
       end
     end
 
-    # Representación string4
-    # @return [String] string representacion
+    # String representation, UI version
+    # ==========================================================================
+
+    # String representation of the object
+    # @return [String] string representation
     def to_s
       getUIversion().to_s
     end
@@ -146,49 +142,10 @@ module Deepspace
       return DamageToUI.new(self)
     end
 
-    # Especificaciones visibilidad
+    # Visibility specifiers
     # ==========================================================================
     private :arrayContainsType
     private_class_method :new
 
   end
-end
-
-# # # Código de prueba
-# prueba1 = Deepspace::Damage.newNumericWeapons(2,2)
-# puts prueba1.nShields
-# puts prueba1.nWeapons
-# puts prueba1.weapons
-# puts prueba1.to_s 
-# arma1 = Deepspace::Weapon.new('laser', Deepspace::WeaponType::PLASMA, 8)
-# arma2 = Deepspace::Weapon.new('misil', Deepspace::WeaponType::MISSILE, 10)
-# armas = []
-# armas << arma1
-# armas << arma2
-# arma = []
-# arma << arma1.type()
-# arma << arma2.type()
-# prueba2 = Deepspace::Damage.newSpecificWeapons(3,arma)
-# puts prueba2.nShields
-# puts prueba2.nWeapons
-# puts prueba2.weapons
-# puts prueba2.to_s 
-# prueba3 = Deepspace::Damage.newCopy(prueba1)
-# puts prueba3.to_s
-# prueba4 = Deepspace::Damage.newCopy(prueba2)
-# puts prueba4.to_s
-# puts prueba1.hasNoEffect
-# puts "-----------"
-# prueba3 = prueba2.adjust(armas,["test"]) #-> Este método necesita comprobaciones
-# puts prueba2.to_s
-# puts prueba3.to_s
-# puts "-----------"
-# puts prueba1.nWeapons
-# prueba1.discardWeapon(arma1)
-# puts prueba1.nWeapons
-# puts prueba2.weapons
-# prueba2.discardWeapon(arma1)
-# puts " "
-# puts prueba2.weapons
-# prueba1.discardShieldBooster
-# puts prueba1.nShields
+end	 
