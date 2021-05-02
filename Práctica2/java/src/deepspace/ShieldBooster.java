@@ -45,4 +45,25 @@ public class ShieldBooster {
             return 1.0f;
         }
     }
+    
+    // -------------------------------------------------------------------------
+    // String representation, UI version
+    // -------------------------------------------------------------------------
+    
+    /**
+     * String representation of the object.
+     * @return string representation
+     */
+    public String toString() {
+        String message = "[ShieldBooster] -> Boost: " + boost
+                + ", Uses: " + uses;
+        return message;
+    }
+    
+    /**
+     * To UI.
+     */
+    ShieldToUI getUIversion() {
+        return new ShieldToUI(this);
+    }
  }

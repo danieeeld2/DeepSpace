@@ -32,19 +32,40 @@ public class Loot {
         return nSupplies;
     }
     
-    int getnWeapons(){
+    int getNWeapons(){
         return nWeapons;
     }
     
-    int getnShields(){
+    int getNShields(){
         return nShields;
     }
     
-    int getnHangars(){
+    int getNHangars(){
         return nHangars;
     }
     
-    int getnMedals(){
+    int getNMedals(){
         return nMedals;
+    }
+    
+     /**
+     * String representation of the object.
+     * @return string representation
+     */
+    @Override
+    public String toString(){
+        return  "Loot(nSupplies = " + nSupplies + 
+                ", nWeapons = " + nWeapons + 
+                ", nShields = " + nShields + 
+                ", nHangars = " + nHangars + 
+                ", nMedals = " + nMedals +  
+                ")"; 
+    }
+    
+    /**
+     * To UI.
+     */
+    LootToUI getUIversion() {
+        return new LootToUI(this);
     }
 }

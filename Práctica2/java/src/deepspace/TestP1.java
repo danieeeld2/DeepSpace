@@ -39,10 +39,10 @@ public class TestP1 {
         System.out.println("Loot:\n");
         Loot loot = new Loot(1,2,3,4,5);
         System.out.println(loot.getNSupplies());
-        System.out.println(loot.getnWeapons());
-        System.out.println(loot.getnShields());
-        System.out.println(loot.getnHangars());
-        System.out.println(loot.getnMedals());
+        System.out.println(loot.getNWeapons());
+        System.out.println(loot.getNShields());
+        System.out.println(loot.getNHangars());
+        System.out.println(loot.getNMedals());
         System.out.println("\n");
         
         System.out.println("SuppliesPackage:\n");

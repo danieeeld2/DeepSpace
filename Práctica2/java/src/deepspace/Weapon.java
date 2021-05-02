@@ -50,4 +50,28 @@ public class Weapon {
             return 1.0f;
         }
     }
+    
+    // -------------------------------------------------------------------------
+    // String representation, UI version
+    // -------------------------------------------------------------------------
+    
+    /**
+     * String representation of the object.
+     * @return string representation
+     */
+    @Override
+    public String toString() {
+        String message = "[Weapon] -> Name: " + name
+                + ", Type: " + type
+                + ", Power: " + power()
+                + ", Uses: " + uses;
+        return message;
+    }
+    
+    /**
+     * To UI.
+     */
+    WeaponToUI getUIversion() {
+        return new WeaponToUI(this);
+    }
 }
