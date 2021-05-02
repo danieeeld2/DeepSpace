@@ -6,6 +6,7 @@
 package deepspace;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 /**
@@ -352,5 +353,119 @@ public class SpaceStation {
                 "\tshieldBoosters = " + shieldBoosters + "\n" +
                 "\tHangar = " + hangar + "\n" +
                 ")";
+    }
+    
+    
+    // Métodos Práctica 3
+    
+    /**
+     * Realiza un disparo
+     * @return la potencia del disparo
+     */
+    public float fire(){
+        float factor = 1;
+        Iterator<Weapon> it = weapons.iterator();
+        while(it.hasNext()){
+            factor*=it.next().useIt();
+        }
+        return factor;        
+    }
+    
+    /**
+     * Aplica la protección del escudo
+     * @return potencia del escudo
+     */
+    public float protection(){
+        float factor = 1;
+        Iterator<ShieldBooster> it = shieldBoosters.iterator();
+        while(it.hasNext()){
+            factor*=it.next().useIt();
+        }
+        return factor;
+    }
+    
+    /**
+     * Interpetra el resultado de recibir un disparo
+     * @param shot disparo enemigo
+     * @return el resultado
+     */
+    public ShotResult receiveShot(float shot){
+        if (protection()>=shot){
+            shieldPower-=SHIELDLOSSPERUNITSHOT;
+            if (shieldPower<0){
+                shieldPower = 0f;
+            }
+            return ShotResult.RESIST;
+        }else{
+            shieldPower = 0f;
+            return ShotResult.DONOTRESIST;
+        }
+    }
+    
+    /**
+     * Recibe y procesa un loot
+     * @param loot loot
+     */
+    public void setLoot(Loot loot){
+        CardDealer dealer = CardDealer.getInstance();
+        int h = loot.getNHangars();
+        
+        if(h>0){
+            Hangar han = new Hangar(dealer.nextHangar());
+            receiveHangar(han);
+        }
+        
+        int elements = loot.getNSupplies();
+        while(elements != 0){
+            SuppliesPackage sup = new SuppliesPackage(dealer.nextSuppliesPackage());
+            receiveSupplies(sup);
+            elements--;
+        }
+        
+        elements = loot.getNWeapons();
+        while(elements != 0){
+            Weapon weap = new Weapon(dealer.nextWeapon());
+            receiveWeapon(weap);
+            elements--;
+        }
+        
+        elements = loot.getNShields();
+        while(elements != 0){
+            ShieldBooster sh = new ShieldBooster(dealer.nextShieldBooster());
+            receiveShieldBooster(sh);
+            elements--;
+        }
+        
+        nMedals += loot.getNMedals();        
+    }
+    
+    /**
+     * Descarta un arma montada de la estación espacial
+     * @param i indice del arma a descartar
+     */
+    public void discardWeapon(int i){
+        int size = weapons.size();
+        if (i>=0 && i<size){
+            Weapon w = new Weapon(weapons.remove(i));
+            if (pendingDamage != null){
+                pendingDamage.discardWeapon(w);
+                cleanPendingDamage();
+            }
+        }
+    }
+    
+    /**
+     * Descarta un escudo montado de la estación espacial
+     * @param i indice del escudo a descartar
+     */
+    public void discardShieldBooster(int i){
+        int size = shieldBoosters.size();
+        if (i>=0 && i<size){
+            ShieldBooster s = new ShieldBooster(shieldBoosters.remove(i));
+            if (pendingDamage != null){
+                pendingDamage.discardShieldBooster();
+                cleanPendingDamage();
+            }
+        }
     }
 }
