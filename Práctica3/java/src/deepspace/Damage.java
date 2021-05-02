@@ -113,7 +113,6 @@ public class Damage {
                 return i;
             }
             i++;
-            it.next();
         }
         return -1;
     }
