@@ -70,7 +70,7 @@ module Deepspace
 
     # Si el daño pendiente no tiene efecto fija la referencia a nulo
     def cleanPendingDamage
-      if @pendingDamage != nil
+      if !@pendingDamage.nil?
         if @pendingDamage.hasNoEffect
           @pendingDamage = nil
         end
@@ -124,7 +124,7 @@ module Deepspace
     # Se calcula el parámetro ajustado y se almacena en elsitio correspondiente
     # @param d [Damage] daño
     def setPendingDamage(d)
-      if d != nil
+      if !d.nil?
         @pendingDamage = d.adjust(@weapons, @shieldBoosters)
       end
     end
@@ -215,11 +215,108 @@ module Deepspace
       return SpaceStationToUI.new(self)
     end
 
+    ########### Métodos Práctica 3 ###############
+
+    # Realiza un disparo
+    # @return [Float] la potencia de disparo
+    def fire
+      factor = 1.0
+      @weapons.each do |w|
+        factor *= w.useIt
+      end
+      return factor
+    end
+
+    # Usa el escudo de protección
+    # @return [Float] Energía del escudo
+    def protection
+      factor = 1.0
+      @shieldBoosters.each do |s|
+        factor *= s.useIt
+      end
+      return factor
+    end
+
+    # Realiza las operaciones relacionadas con la recepción de un impacto enemigo
+    # @param shot [Float] disparo enemigo
+    # @return [ShotResult] resultado del disparo
+    def receiveShot(shot)
+      if protection >= shot
+        @shieldPower -= @@SHIELDLOSSPERUNITSHOT*shot
+        if @shieldPower<0
+          @shieldPower = 0.0
+        end
+        return ShotResult::RESIST 
+      end
+      @shieldPower = 0.0
+      return  ShotResult::DONOTRESIST
+    end
+
+    # Recepción de un botín
+    # @param loot [Loot] botín recibido
+    def setLoot(loot)
+      dealer = CardDealer.instance
+      h = loot.nHangars
+
+      if h > 0
+        hangar = dealer.nextHangar
+        receiveHangar(hangar)
+      end
+
+      elements = loot.nSupplies
+      elements.times do
+        sup = dealer.nextSuppliesPackage
+        receiveSupplies(sup)
+      end
+
+      elements = loot.nWeapons
+      elements.times do
+        weap = dealer.nextWeapon
+        receiveWeapon(weap)
+      end
+
+      elements = loot.nShields
+      elements.times do
+        sh = dealer.nextShieldBooster
+        receiveShieldBooster(sh)
+      end
+
+      @nMedals += loot.nMedals
+    end
+
+    # Se intenta descartar el arma con índice i de la colección de armas en uso
+    # Además debe actualizar el daño pendiente
+    # @param i [Integer] índice del arma
+    def discardWeapon(i)
+      size = @weapons.length
+      if i >= 0 && i < size
+        w = @weapons.delete_at(i)
+        if !@pendingDamage.nil?
+          @pendingDamage.discardWeapon(w)
+          cleanPendingDamage
+        end
+      end
+    end
+
+    # Se intenta descartar el potenciador de escudo con índice i
+    # Además se debe actualizar el daño pendiente
+    # @param i [Integer] índice del arma
+    def discardShieldBooster(i)
+      size = @shieldBoosters.length
+      if i >= 0 && i < size
+        s = @shieldBoosters.delete_at(i)
+        if !@pendingDamage.nil?
+          @pendingDamage.discardShieldBooster
+          cleanPendingDamage
+        end
+      end
+    end
+
     private :assignFuelValue, :cleanPendingDamage
   end
 end
 
-# Código de prueba
+# Código de prueba práctica 2
 # supplies = Deepspace::SuppliesPackage.new(1,2,3)
 # prueba = Deepspace::SpaceStation.new("Prueba",supplies)
 # puts prueba.name
@@ -271,3 +368,36 @@ end
 # prueba.setPendingDamage(damage)
 # puts prueba.pendingDamage
 # puts prueba.validState
+
+# Código para práctica 3
+# supplies = Deepspace::SuppliesPackage.new(1,2,3)
+# prueba = Deepspace::SpaceStation.new("Prueba",supplies)
+# hangar = Deepspace::Hangar.new(4)
+# weapon = Deepspace::Weapon.new('arma', Deepspace::WeaponType::PLASMA, 8)
+# shield = Deepspace::ShieldBooster.new('escudo', 2, 2)
+# prueba.receiveHangar(hangar)
+# prueba.receiveWeapon(weapon)
+# prueba.receiveWeapon(weapon)
+# prueba.receiveShieldBooster(shield)
+# prueba.receiveShieldBooster(shield)
+# prueba.mountWeapon(0)
+# prueba.mountShieldBooster(0)
+# prueba.mountWeapon(0)
+# prueba.mountShieldBooster(0)
+# puts prueba.weapons
+# puts prueba.shieldBoosters
+# # puts prueba.fire
+# # puts prueba.protection
+# puts prueba.receiveShot(2.0)
+# puts prueba.shieldPower
+# sp = Deepspace::SuppliesPackage.new(0,0,0)
+# loot = Deepspace::Loot.new(1,2,3,4,5)
+# prueba2 = Deepspace::SpaceStation.new("pruebaa",sp)
+# prueba2.setLoot(loot)
+# puts prueba2.to_s
+# puts "____________________________________"
+# puts prueba.weapons
+# puts prueba.shieldBoosters
+# prueba.discardWeapon(1)
+# prueba.discardShieldBooster(1)
+# puts prueba.to_s
