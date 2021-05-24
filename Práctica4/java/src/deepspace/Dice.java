@@ -20,6 +20,11 @@ public class Dice {
     private final float NWEAPONSPROB;
     private final float FIRSTSHOTPROB;
     
+    /**
+     * Probabilidad de eficiencia extra
+     */
+    private final float EXTRAEFFICIENCYPROB;
+    
     private Random generator;
     
     public Dice(){
@@ -27,6 +32,7 @@ public class Dice {
         this.NSHIELDSPROB = 0.25f;
         this.NWEAPONSPROB = 0.33f;
         this.FIRSTSHOTPROB = 0.5f;
+        EXTRAEFFICIENCYPROB = 0.8f;
         generator = new Random();
     }
     
@@ -82,6 +88,13 @@ public class Dice {
         if(generator.nextFloat() < speed)
             return true;
         else 
+            return false;
+    }
+    
+    public boolean extraEfficiency(){
+        if(generator.nextFloat() < EXTRAEFFICIENCYPROB)
+            return true;
+        else
             return false;
     }
     

@@ -53,6 +53,11 @@ public class GameUniverse {
     private EnemyStarShip currentEnemy;
     
     /**
+     * Si existe ciudad espacial o no
+     */
+    private boolean haveSpaceCity;
+    
+    /**
      * Constructor
      */
     public GameUniverse() {
@@ -64,6 +69,7 @@ public class GameUniverse {
         currentStation = null;
         currentEnemy = null;
         spaceStations = new ArrayList<>();
+        haveSpaceCity = false;
     }
     
     // Getters
@@ -248,7 +254,7 @@ public class GameUniverse {
             boolean moves = dice.spaceStationMoves(s);
             
             if (!moves){
-                Damage damage = new Damage(enemy.getDamage());
+                Damage damage = enemy.getDamage();
                 station.setPendingDamage(damage);
                 
                 combatresult = CombatResult.ENEMYWINS;
@@ -258,14 +264,48 @@ public class GameUniverse {
                 combatresult = CombatResult.STATIONESCAPES;
             }
         }else{
-            Loot aLoot = enemy.getLoot();
-            station.setLoot(aLoot);
+            Loot aLoot = enemy.getLoot();            
+            Transformation transform = station.setLoot(aLoot);
             
-            combatresult = CombatResult.STATIONWINS;
+            if (transform == Transformation.GETEFFICIENT){
+                makeStationEfficient();
+                combatresult = CombatResult.STATIONWINSANDCONVERTS;
+            } else if (transform == Transformation.SPACECITY){
+                createSpaceCity();
+                combatresult = CombatResult.STATIONWINSANDCONVERTS;
+            } else
+                combatresult = CombatResult.STATIONWINS;
         }
         
         gameState.next(turns, spaceStations.size());
         return combatresult;
+    }
+    
+    /**
+     * Crea una ciudad espacial
+     */
+    private void createSpaceCity(){
+        if (!haveSpaceCity){
+            ArrayList<SpaceStation> rest = new ArrayList<>();
+            
+            for (SpaceStation station : spaceStations)
+                if (station != currentStation)
+                    rest.add(station);
+            
+            currentStation = new SpaceCity(currentStation, rest);
+            spaceStations.set(currentStationIndex, currentStation);
+            haveSpaceCity = true; 
+        }
+    }
+    
+    /**
+     * Hace laestación espacial eficiente o eficiente beta
+     */
+    private void makeStationEfficient(){
+        currentStation = new PowerEfficientSpaceStation(currentStation);
+        if (dice.extraEfficiency())
+            currentStation = new BetaPowerEfficientSpaceStation(currentStation);
+        spaceStations.set(currentStationIndex, currentStation);
     }
     
     /**

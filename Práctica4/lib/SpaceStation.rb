@@ -38,7 +38,7 @@ module Deepspace
       # @!attribute [Float] potencia de escudo
       @shieldPower = 0.0
 
-      # @!attribute [Damage] daño pendiente
+      # @!attribute [] daño pendiente
       @pendingDamage = nil
 
       # @!attribute [Array<Weapon>] array de armas
@@ -77,6 +77,38 @@ module Deepspace
       end
     end
 
+    # Crea una copia
+    # @param other [SpaceStation] instancia a copiar
+    def copy(other)
+      @name = other.name
+      @ammoPower = other.ammoPower
+      @shieldPower = other.shieldPower
+      @fuelUnits = other.fuelUnits
+      @nMedals = other.nMedals
+
+      if !other.hangar.nil?
+        @hangar = Hangar.newCopy(other.hangar)
+      else
+        @hangar = nil
+      end
+
+      if !other.pendingDamage.nil?
+        @pendingDamage = other.pendingDamage.copy
+      else
+        @pendingDamage = nil
+      end
+
+      @shieldBoosters = []
+      for s in other.shieldBoosters
+        @shieldBoosters << ShieldBooster.newCopy(s)
+      end
+
+      @weapons = []
+      for w in other.weapons
+        @weapons << Weapon.newCopy(w)
+      end
+    end
+
     # Asigna unidades de combustible a la estación
     # @param f [Float] combustible a ser asignado
     def assignFuelValue(f)
@@ -88,7 +120,7 @@ module Deepspace
     end
 
     # Almacena el daño pendiente
-    # @param d [Damage] daño
+    # @param d [] daño
     def setPendingDamage(d)
       if !d.nil?
         @pendingDamage = d.adjust(@weapons, @shieldBoosters)
@@ -295,6 +327,14 @@ module Deepspace
 
       medals = loot.nMedals
       @nMedals += medals
+
+      if loot.efficient
+        return Transformation::GETEFFICIENT
+      elsif loot.spaceCity
+        return Transformation::SPACECITY
+      else
+        return Transformation::NOTRANSFORM
+      end
     end
 
     # Descarta un arma montada en la estación espacial

@@ -3,16 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package deepspace;
 
 /**
  *
  * @author daniel
  */
-
-// Representa todos los resultados posibles de un combate
-
-public enum CombatResult {
-    ENEMYWINS, NOCOMBAT, STATIONESCAPES, STATIONWINS, STATIONWINSANDCONVERTS
+public enum Transformation {
+    NOTRANSFORM,
+    GETEFFICIENT,
+    SPACECITY
 }

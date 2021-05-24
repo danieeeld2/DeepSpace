@@ -87,6 +87,27 @@ public class SpaceStation {
         receiveSupplies(s);
     }
     
+    /**
+     * Constructor de copia
+     * @param other instancia a copiar
+     */
+    SpaceStation(SpaceStation other){
+        ammoPower = other.ammoPower;
+        fuelUnits = other.fuelUnits;
+        name = other.name;
+        nMedals = other.nMedals;
+        shieldPower = other.shieldPower;
+
+        if ( other.pendingDamage != null )
+            pendingDamage = other.pendingDamage.copy();
+        if ( other.weapons != null )
+            weapons = new ArrayList<>(other.weapons);
+        if ( other.shieldBoosters != null )
+            shieldBoosters = new ArrayList<>(other.shieldBoosters);
+        if ( other.hangar != null )
+            hangar = new Hangar(other.hangar);  
+    }
+    
     // Getters 
     
     /**
@@ -368,7 +389,7 @@ public class SpaceStation {
         while(it.hasNext()){
             factor*=it.next().useIt();
         }
-        return factor;        
+        return ammoPower*factor;        
     }
     
     /**
@@ -381,7 +402,7 @@ public class SpaceStation {
         while(it.hasNext()){
             factor*=it.next().useIt();
         }
-        return factor;
+        return shieldPower*factor;
     }
     
     /**
@@ -391,7 +412,7 @@ public class SpaceStation {
      */
     public ShotResult receiveShot(float shot){
         if (protection()>=shot){
-            shieldPower-=SHIELDLOSSPERUNITSHOT;
+            shieldPower-=SHIELDLOSSPERUNITSHOT*shot;
             if (shieldPower<0){
                 shieldPower = 0f;
             }
@@ -405,8 +426,9 @@ public class SpaceStation {
     /**
      * Recibe y procesa un loot
      * @param loot loot
+     * @return Como se transforma la estación espacial
      */
-    public void setLoot(Loot loot){
+    public Transformation setLoot(Loot loot){
         CardDealer dealer = CardDealer.getInstance();
         int h = loot.getNHangars();
         
@@ -436,7 +458,15 @@ public class SpaceStation {
             elements--;
         }
         
-        nMedals += loot.getNMedals();        
+        nMedals += loot.getNMedals();   
+        
+        if(loot.getEfficient()){
+            return Transformation.GETEFFICIENT;
+        }else if(loot.spaceCity()){
+            return Transformation.SPACECITY;
+        }else{
+            return Transformation.NOTRANSFORM;
+        }
     }
     
     /**

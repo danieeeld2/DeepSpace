@@ -11,7 +11,9 @@ module Deepspace
     # @param _nShields [Integer] número de escudos recibidos
     # @param _nHangars [Integer] número de hangares recibidos
     # @param _nMedals [Integer] número de medallas recibidas
-    def initialize(_nSupplies, _nWeapons, _nShields, _nHangars, _nMedals)
+    # @param _efficient [Boolean] si una estación espacial se convierte en eficiente o no
+    # @param _spaceCity [Boolean] si una estación espacial se convierte en ciudad
+    def initialize(_nSupplies, _nWeapons, _nShields, _nHangars, _nMedals, _efficient = false, _spaceCity = false)
       # @!attribute [Integer] número de paquetes recibidos
       @nSupplies = _nSupplies
 
@@ -26,12 +28,18 @@ module Deepspace
 
       # @!attribute [Integer] número de medallas recibidas
       @nMedals = _nMedals
+
+      # @!attribute [Boolean] si una estación espacial se convierte en eficiente o no
+      @efficient = _efficient
+
+      # @!attribute [Boolean] si una estación espacial se convierte en ciudad o no
+      @spaceCity = _spaceCity
     end
 
     # Getters
     # ==========================================================================
 
-    attr_reader :nSupplies, :nWeapons, :nShields, :nHangars, :nMedals
+    attr_reader :nSupplies, :nWeapons, :nShields, :nHangars, :nMedals, :efficient, :spaceCity
 
     # String representation, UI version
     # ==========================================================================

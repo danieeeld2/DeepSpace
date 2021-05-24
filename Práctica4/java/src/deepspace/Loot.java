@@ -20,12 +20,34 @@ public class Loot {
     private int nHangars;
     private int nMedals;
     
+    /**
+     * Si una estación espacial se convierte a eficiente o no
+     */
+    private boolean efficient;
+    
+    /**
+     * Si una estación espacial se convierte en ciudad
+     */
+    private boolean spaceCity;
+    
     Loot(int nSup, int nWeap, int nSh, int nHan, int nMed){
         this.nSupplies = nSup;
         this.nWeapons = nWeap;
         this.nShields = nSh;
         this.nHangars = nHan;
-        this.nMedals = nMed;        
+        this.nMedals = nMed;    
+        efficient = false;
+        spaceCity = false;
+    }
+    
+    Loot(int nSup, int nWeap, int nSh, int nHan, int nMed, boolean _efficient, boolean _spaceCity){
+        this.nSupplies = nSup;
+        this.nWeapons = nWeap;
+        this.nShields = nSh;
+        this.nHangars = nHan;
+        this.nMedals = nMed;    
+        efficient = _efficient;
+        spaceCity = _spaceCity;
     }
     
     int getNSupplies(){
@@ -48,6 +70,14 @@ public class Loot {
         return nMedals;
     }
     
+    public boolean getEfficient(){
+        return efficient;
+    }
+    
+    public boolean spaceCity(){
+        return spaceCity;
+    }
+    
      /**
      * String representation of the object.
      * @return string representation
@@ -58,7 +88,9 @@ public class Loot {
                 ", nWeapons = " + nWeapons + 
                 ", nShields = " + nShields + 
                 ", nHangars = " + nHangars + 
-                ", nMedals = " + nMedals +  
+                ", nMedals = " + nMedals + 
+                ", getEfficient = " + efficient + 
+                ", spaceCity = " + spaceCity + 
                 ")"; 
     }
     

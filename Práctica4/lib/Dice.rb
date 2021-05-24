@@ -19,6 +19,9 @@ module Deepspace
       # @!attribute [Float] Probabilidad de primer disparo
       @FIRSTSHOTPROB = 0.5
 
+      # @!attribute [Float] Probabilidad de eficiencia extra
+      @EXTRAEFFICIENCYPROB = 0.8
+
       # @!attribute [Random] Generador de números aleatorios
       @generator = Random.new()
     end
@@ -85,5 +88,10 @@ module Deepspace
       return @generator.rand < speed
     end
 
+    # Determina si una estación espacial recibe eficiencia extra
+    # @return [Boolean] true en caso de recibir eficiencia extra, false en caso contrario
+    def extraEfficiency
+      (@generator.rand <= @EXTRAEFFICIENCYPROB)
+    end
   end
 end  

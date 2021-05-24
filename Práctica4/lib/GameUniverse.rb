@@ -10,7 +10,10 @@ require_relative 'ShotResult'
 require_relative 'SpaceStation'
 require_relative 'CardDealer'
 require_relative 'EnemyStarShip'
-
+require_relative 'Transformation'
+#require_relative 'PowerEfficientSpaceStation'
+require_relative 'BetaPowerEfficientSpaceStation'
+require_relative 'SpaceCity'
 module Deepspace
   class GameUniverse
 
@@ -39,6 +42,9 @@ module Deepspace
 
       # @!attribute [EnemyStarShip] enemigo actual
       @currentEnemy = nil
+
+      # @!attribute [Boolean] si existe ciudad espacial o no
+      @haveSpaceCity = false
     end
 
     # Getter for gameState
@@ -162,7 +168,7 @@ module Deepspace
 
         if stationState
           @currentStationIndex = (@currentStationIndex + 1) \
-						  % @spaceStations.length
+						             % @spaceStations.length
           @turns += 1
 
           @currentStation = @spaceStations[@currentStationIndex]
@@ -236,14 +242,50 @@ module Deepspace
         end
       else
         aLoot = enemy.loot
-        station.setLoot(aLoot)
+        transformation = station.setLoot(aLoot)
 
-        combatResult = CombatResult::STATIONWINS
+        if transformation == Transformation::GETEFFICIENT
+          makeStationEfficient
+          combatResult = CombatResult::STATIONWINSANDCONVERTS
+        elsif transformation == Transformation::SPACECITY
+          createSpaceCity
+          combatResult = CombatResult::STATIONWINSANDCONVERTS
+        else
+          combatResult = CombatResult::STATIONWINS
+        end
       end
 
       @gameState.next(@turns, @spaceStations.length)
 
       return combatResult
+    end
+
+    # Crea una ciudad espacial
+    def createSpaceCity
+      if !@haveSpaceCity
+        others = []
+
+        for station in @spaceStations
+          if station != @currentStation
+            others << station
+          end
+        end
+
+        @currentStation = SpaceCity.new(@currentStation, others)
+        @spaceStations[@currentStationIndex] = @currentStation
+        @haveSpaceCity = true
+      end
+    end
+
+    # Crea una estación espacial eficiente
+    def makeStationEfficient
+      if @dice.extraEfficiency
+        @currentStation = BetaPowerEfficientSpaceStation.new(@currentStation)
+      else
+        @currentStation = PowerEfficientSpaceStation.new(@currentStation)
+      end
+
+      @spaceStations[@currentStationIndex] = @currentStation
     end
 
     # String representation, UI version
@@ -252,12 +294,11 @@ module Deepspace
     # String representation of the object
     # @return [String] string representation
     def to_s
-      #message = "[GameUniverse] -> Game state: #{@gameState.to_s}," \
-      #		+ "Turns: #{@turns}, Dice: #{@dice.to_s}\n" \
-      #		+ "\tCurrent station: #{@currentStation.to_s}\n" \
-      #		+ "\tCurrent enemy: #{@currentEnemy.to_s}"
-      #return message
-      getUIversion().to_s
+      message = "[GameUniverse] -> Game state: #{@gameState.to_s}," \
+				 + "Turns: #{@turns}, Dice: #{@dice.to_s}\n" \
+				 + "\tCurrent station: #{@currentStation.to_s}\n" \
+				 + "\tCurrent enemy: #{@currentEnemy.to_s}"
+      message
     end
 
     # To UI
