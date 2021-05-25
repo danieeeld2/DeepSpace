@@ -60,7 +60,7 @@ module Deepspace
 
       new_weapons.compact!
 
-      self.class.new(new_weapons, super(s))
+      return self.class.new(new_weapons, super(s))
     end
 
     # Devuelve una copia de la instancia actual

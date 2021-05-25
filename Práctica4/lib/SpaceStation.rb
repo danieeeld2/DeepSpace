@@ -38,7 +38,7 @@ module Deepspace
       # @!attribute [Float] potencia de escudo
       @shieldPower = 0.0
 
-      # @!attribute [] daño pendiente
+      # @!attribute [Damage] daño pendiente
       @pendingDamage = nil
 
       # @!attribute [Array<Weapon>] array de armas
@@ -120,7 +120,7 @@ module Deepspace
     end
 
     # Almacena el daño pendiente
-    # @param d [] daño
+    # @param d [Damage] daño
     def setPendingDamage(d)
       if !d.nil?
         @pendingDamage = d.adjust(@weapons, @shieldBoosters)
