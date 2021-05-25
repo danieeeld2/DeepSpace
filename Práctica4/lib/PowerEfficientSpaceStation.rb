@@ -45,5 +45,17 @@ module Deepspace
         Transformation::NOTRANSFORM
       end
     end
+
+    # String representation
+    # @return [String] string representation
+    def to_s
+      message = "(Efficient)" + super
+      return message
+    end
+
+    # To UI
+    def getUIversion
+      PowerEfficientSpaceStationToUI.new(self)
+    end
   end
 end

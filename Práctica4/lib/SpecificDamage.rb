@@ -15,7 +15,7 @@ module Deepspace
       super(_nShields)
 
       # @!attribute [Array<WeaponType>] array de armas que se pierden
-      @weapons = []
+      @weapons = _weapons
     end
 
     # Getters
