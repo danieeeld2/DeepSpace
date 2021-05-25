@@ -13,7 +13,7 @@ package deepspace;
 // Representa las armas de las que puede disponer una
 // estación espacial para potenciar su energía de disparo
 
-public class Weapon {
+public class Weapon implements CombatElement {
     private String name;
     private WeaponType type;
     private int uses;
@@ -34,7 +34,8 @@ public class Weapon {
         return type;
     }
     
-    int getUses(){
+    @Override
+    public int getUses(){
         return uses;
     }
     
@@ -42,7 +43,8 @@ public class Weapon {
         return type.getPower();
     }
     
-    float useIt(){
+    @Override
+    public float useIt(){
         if(uses > 0){
             uses-=1;
             return power();

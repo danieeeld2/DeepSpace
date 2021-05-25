@@ -9,7 +9,7 @@ package deepspace;
  *
  * @author daniel
  */
-public class EnemyStarShip {
+public class EnemyStarShip implements SpaceFighter {
     /**
      * Nombre de la nave
      */
@@ -110,6 +110,7 @@ public class EnemyStarShip {
      * Consulta escudos
      * @return shieldPower 
      */
+     @Override
     public float protection(){
         return shieldPower;
     }
@@ -118,10 +119,12 @@ public class EnemyStarShip {
      * Consulta potencia de fuego
      * @return ammoPower
      */
+     @Override
     public float fire(){
         return ammoPower;
     }
     
+    @Override
     public ShotResult receiveShot(float shot){
         if (shieldPower >= shot)
             return ShotResult.RESIST;

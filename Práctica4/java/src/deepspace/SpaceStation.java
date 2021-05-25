@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  *
  * @author daniel
  */
-public class SpaceStation {
+public class SpaceStation implements SpaceFighter {
     /**
      * Máxima cantidad deunidades de combustible que puede tener una estación
      */
@@ -383,6 +383,7 @@ public class SpaceStation {
      * Realiza un disparo
      * @return la potencia del disparo
      */
+     @Override
     public float fire(){
         float factor = 1;
         Iterator<Weapon> it = weapons.iterator();
@@ -396,6 +397,7 @@ public class SpaceStation {
      * Aplica la protección del escudo
      * @return potencia del escudo
      */
+     @Override
     public float protection(){
         float factor = 1;
         Iterator<ShieldBooster> it = shieldBoosters.iterator();
@@ -410,6 +412,7 @@ public class SpaceStation {
      * @param shot disparo enemigo
      * @return el resultado
      */
+     @Override
     public ShotResult receiveShot(float shot){
         if (protection()>=shot){
             shieldPower-=SHIELDLOSSPERUNITSHOT*shot;
