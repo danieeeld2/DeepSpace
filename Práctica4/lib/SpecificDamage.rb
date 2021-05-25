@@ -86,8 +86,7 @@ module Deepspace
     # String representation of the object
     # @return [String] string representation
     def to_s
-      message = "[Specific Damage] -> Shields: #{@nShields}, Weapon types: " + getWeaponInfo
-      return message
+      getUIversion.to_s
     end
 
     # To UI

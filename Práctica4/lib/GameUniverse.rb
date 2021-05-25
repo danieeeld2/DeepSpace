@@ -11,7 +11,7 @@ require_relative 'SpaceStation'
 require_relative 'CardDealer'
 require_relative 'EnemyStarShip'
 require_relative 'Transformation'
-#require_relative 'PowerEfficientSpaceStation'
+require_relative 'PowerEfficientSpaceStation'
 require_relative 'BetaPowerEfficientSpaceStation'
 require_relative 'SpaceCity'
 module Deepspace
