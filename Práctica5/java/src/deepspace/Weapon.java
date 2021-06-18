@@ -1,0 +1,79 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package deepspace;
+
+/**
+ *
+ * @author daniel
+ */
+
+// Representa las armas de las que puede disponer una
+// estación espacial para potenciar su energía de disparo
+
+public class Weapon implements CombatElement {
+    private String name;
+    private WeaponType type;
+    private int uses;
+    
+    public Weapon(String n, WeaponType t, int u){
+        this.name = n;
+        this.type = t;
+        this.uses = u;
+    }
+    
+    public Weapon(Weapon w){
+        this.name = w.name;
+        this.type = w.type;
+        this.uses = w.uses;
+    }
+    
+    WeaponType getType(){
+        return type;
+    }
+    
+    @Override
+    public int getUses(){
+        return uses;
+    }
+    
+    float power(){
+        return type.getPower();
+    }
+    
+    @Override
+    public float useIt(){
+        if(uses > 0){
+            uses-=1;
+            return power();
+        }else{
+            return 1.0f;
+        }
+    }
+    
+    // -------------------------------------------------------------------------
+    // String representation, UI version
+    // -------------------------------------------------------------------------
+    
+    /**
+     * String representation of the object.
+     * @return string representation
+     */
+    @Override
+    public String toString() {
+        String message = "[Weapon] -> Name: " + name
+                + ", Type: " + type
+                + ", Power: " + power()
+                + ", Uses: " + uses;
+        return message;
+    }
+    
+    /**
+     * To UI.
+     */
+    WeaponToUI getUIversion() {
+        return new WeaponToUI(this);
+    }
+}
