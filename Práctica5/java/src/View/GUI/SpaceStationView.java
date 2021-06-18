@@ -1,10 +1,4 @@
-/**
- * @file SpaceStationView.java
- * @author Daniel Pérez Ruiz
- * @brief Implementación GUI - DeepSpace::SpaceStationView
- * @version P-05
- * type : Java-JPanel
- */
+
 package View.GUI;
 
 import controller.Controller;

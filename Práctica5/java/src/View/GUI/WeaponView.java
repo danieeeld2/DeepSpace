@@ -1,10 +1,4 @@
-/**
- * @file WeaponView.java
- * @author Daniel Pérez Ruiz
- * @brief Implementación GUI - DeepSpace::WeaponView
- * @version P-05
- * type : Java-JPanel
- */
+
 package View.GUI;
 
 import javax.swing.JPanel;

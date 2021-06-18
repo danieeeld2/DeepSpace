@@ -1,9 +1,4 @@
-/**
- * @file MainWindow.java
- * @author Daniel Pérez Ruiz
- * @brief Vista PRINCIPAL GUI - Deepspace
- * @version 5.0 FINAL
- */
+
 package View.GUI;
 
 

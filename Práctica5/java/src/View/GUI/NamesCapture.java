@@ -1,10 +1,4 @@
-/**
- * @file NamesCapture.java
- * @author Daniel Pérez Ruiz
- * @brief Obtencion de jugadores - Deepspace
- * @version 5.0 FINAL
- * type : Java-JDialog
- */
+
 package View.GUI;
 
 import java.util.ArrayList;

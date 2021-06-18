@@ -1,10 +1,4 @@
-/**
- * @file EnemyStarShipView.java
- * @author Daniel Pérez Ruiz
- * @brief Implementación GUI - DeepSpace::EnemyStarShipView
- * @version P-05
- * type : Java-JPanel
- */
+
 package View.GUI;
 import controller.Controller;
 import javax.swing.JPanel;
